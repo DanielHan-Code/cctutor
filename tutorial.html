@@ -751,8 +751,15 @@
   function copyCode(btn) {
     const body = btn.closest('.code-block').querySelector('.code-body');
     const text = Array.from(body.querySelectorAll('div'))
-      .map(d => d.textContent.replace(/^PS>\s*/,'').replace(/^>\s*/,'').trim())
-      .filter(t => t && !t.startsWith('#') && t !== ' ')
+      .filter(d => d.querySelector('.p'))
+      .map(d => {
+        const prompt = d.querySelector('.p');
+        prompt.remove();
+        const cmd = d.textContent.trim();
+        d.prepend(prompt);
+        return cmd;
+      })
+      .filter(t => t && !t.startsWith('#'))
       .join('\n');
     navigator.clipboard.writeText(text).then(() => {
       const orig = btn.textContent;
