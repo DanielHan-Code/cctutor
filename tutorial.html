@@ -86,6 +86,24 @@
     .snav-item.active .snav-dot { background:var(--accent); border-color:var(--accent); color:#fff; }
     .snav-item.done  .snav-dot { background:rgba(34,197,94,.15); border-color:var(--green); color:var(--green); }
 
+    /* BRANCH SELECTOR */
+    .branch-selector {
+      display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .branch-btn {
+      flex: 1; min-width: 200px;
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface2); border: 2px solid var(--border);
+      border-radius: 12px; padding: 16px 20px;
+      cursor: pointer; text-align: left; transition: all .2s;
+    }
+    .branch-btn:hover { border-color: var(--accent); }
+    .branch-btn.active { border-color: var(--accent); background: rgba(249,115,22,.08); }
+    .branch-icon { font-size: 24px; flex-shrink: 0; }
+    .branch-btn-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .branch-btn-sub { font-size: 12px; color: var(--muted); }
+    .branch-content { animation: fadeIn .25s ease; }
+
     /* METHOD BADGE */
     .method-badge {
       display:inline-flex; align-items:center; gap:5px;
@@ -396,28 +414,88 @@
     </div>
 
     <!-- ══════════════════════════════════════
-         STEP 2  API 키 발급
+         STEP 2  계정 연동
     ══════════════════════════════════════ -->
     <div class="step-card" data-step="2">
       <div class="step-header">
         <span class="step-badge">Step 3</span>
         <div class="step-header-text">
-          <h2>Anthropic API 키 발급</h2>
-          <p>Claude Code 대화창에 아래 프롬프트를 붙여넣으면, Claude가 브라우저를 열어서 API 키 발급까지 안내합니다.</p>
+          <h2>Claude 계정 연동</h2>
+          <p>사용 중인 요금제에 따라 연동 방식이 다릅니다. 아래에서 해당하는 방식을 선택하세요.</p>
         </div>
       </div>
-      <span class="method-badge method-prompt">✦ 프롬프트 붙여넣기</span>
 
-      <div class="sub-section">
-        <h3>① <code>claude</code> 를 실행하고 대화창에 아래 프롬프트를 붙여넣으세요</h3>
-        <a href="https://console.anthropic.com" target="_blank" class="official-link">🌐 console.anthropic.com <span class="ext">API 콘솔 ↗</span></a>
-
-        <div class="prompt-box main">
-          <div class="prompt-header">
-            <span class="prompt-label">📋 Claude Code 대화창에 붙여넣기</span>
-            <button class="copy-prompt-btn" onclick="copyById('apikey-prompt',this)">전체 복사</button>
+      <!-- 분기 선택 -->
+      <div class="branch-selector">
+        <button class="branch-btn active" onclick="switchBranch('pro', this)">
+          <span class="branch-icon">💎</span>
+          <div>
+            <div class="branch-btn-title">Pro / Max 구독 중</div>
+            <div class="branch-btn-sub">claude.ai 계정으로 바로 연동</div>
           </div>
-          <div id="apikey-prompt" class="prompt-body">pwr(playwright)을 사용해서 아래 과정을 진행해줘:
+        </button>
+        <button class="branch-btn" onclick="switchBranch('api', this)">
+          <span class="branch-icon">🔑</span>
+          <div>
+            <div class="branch-btn-title">API 키 사용</div>
+            <div class="branch-btn-sub">console.anthropic.com에서 발급</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- PRO/MAX 분기 -->
+      <div id="branch-pro" class="branch-content">
+        <span class="method-badge method-manual">⌨️ 직접 명령어 입력</span>
+        <div class="sub-section">
+          <h3>① PowerShell에서 아래 명령 실행</h3>
+          <div class="code-block">
+            <div class="code-topbar">
+              <div class="ctb-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-fname">PowerShell</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">복사</button>
+            </div>
+            <div class="code-body">
+              <div><span class="p">PS&gt; </span><span class="c">claude</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-section">
+          <h3>② 브라우저 로그인 후 연동 완료</h3>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="flow-num n">1</div>
+              <div class="flow-body"><h4>claude 실행 시 브라우저가 자동으로 열림</h4><p>claude.ai 로그인 페이지로 이동합니다.</p></div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-num a">2</div>
+              <div class="flow-body"><h4>claude.ai 계정으로 로그인</h4><p>Pro / Max 구독 계정으로 로그인하면 자동으로 연동됩니다.</p></div>
+            </div>
+            <div class="flow-item" style="padding-bottom:0">
+              <div class="flow-num ok">✓</div>
+              <div class="flow-body ok"><h4>Claude Code 사용 준비 완료</h4><p>API 키 없이 구독 크레딧으로 바로 사용 가능합니다.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-section">
+          <h3>✅ 완료 확인</h3>
+          <div class="check-list">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">claude 실행 후 로그인 완료, 대화창이 열렸다</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API KEY 분기 -->
+      <div id="branch-api" class="branch-content" style="display:none">
+        <span class="method-badge method-prompt">✦ 프롬프트 붙여넣기</span>
+        <div class="sub-section">
+          <h3>① <code>claude</code> 를 실행하고 대화창에 아래 프롬프트를 붙여넣으세요</h3>
+          <a href="https://console.anthropic.com" target="_blank" class="official-link">🌐 console.anthropic.com <span class="ext">API 콘솔 ↗</span></a>
+
+          <div class="prompt-box main">
+            <div class="prompt-header">
+              <span class="prompt-label">📋 Claude Code 대화창에 붙여넣기</span>
+              <button class="copy-prompt-btn" onclick="copyById('apikey-prompt',this)">전체 복사</button>
+            </div>
+            <div id="apikey-prompt" class="prompt-body">pwr(playwright)을 사용해서 아래 과정을 진행해줘:
 
 1. console.anthropic.com 에 접속해줘
 2. 회원가입 또는 로그인 페이지로 이동해줘
@@ -425,41 +503,42 @@
 3. 내가 "로그인했어" 라고 하면 API Keys 메뉴로 이동해서 새 키를 생성해줘
 4. 생성된 키(sk-ant-...)를 ANTHROPIC_API_KEY 환경변수에 영구 등록해줘:
    [System.Environment]::SetEnvironmentVariable("ANTHROPIC_API_KEY", "발급된키", "User")</div>
+          </div>
+
+          <div class="info-box warn">
+            <span class="info-icon">⚠️</span>
+            <span>브라우저가 열리면 이메일/비밀번호로 <strong>직접 로그인</strong>하세요. 완료 후 대화창에 <strong>"로그인했어"</strong> 라고 입력하면 Claude가 나머지를 이어서 진행합니다.</span>
+          </div>
         </div>
 
-        <div class="info-box warn">
-          <span class="info-icon">⚠️</span>
-          <span>브라우저가 열리면 이메일/비밀번호로 <strong>직접 로그인</strong>하세요. 완료 후 대화창에 <strong>"로그인했어"</strong> 라고 입력하면 Claude가 나머지를 이어서 진행합니다.</span>
-        </div>
-      </div>
-
-      <div class="sub-section">
-        <h3>② 예상 흐름</h3>
-        <div class="flow">
-          <div class="flow-item">
-            <div class="flow-num n">1</div>
-            <div class="flow-body"><h4>Claude가 Edge 브라우저로 console.anthropic.com 접속</h4><p>playwright MCP가 브라우저를 자동으로 엽니다.</p></div>
-          </div>
-          <div class="flow-item">
-            <div class="flow-num a">2</div>
-            <div class="flow-body"><h4>직접 로그인 후 "로그인했어" 입력</h4><p>이메일/비밀번호는 직접 입력. 완료 후 Claude에게 알려주세요.</p></div>
-          </div>
-          <div class="flow-item">
-            <div class="flow-num n">3</div>
-            <div class="flow-body"><h4>Claude가 API Keys 페이지로 이동 → 키 생성</h4><p>sk-ant-api03-... 형태의 키를 자동으로 생성합니다.</p></div>
-          </div>
-          <div class="flow-item" style="padding-bottom:0">
-            <div class="flow-num ok">✓</div>
-            <div class="flow-body ok"><h4>환경변수 ANTHROPIC_API_KEY 자동 등록 완료</h4><p>PowerShell 재시작 후 Claude Code가 자동으로 키를 읽어옵니다.</p></div>
+        <div class="sub-section">
+          <h3>② 예상 흐름</h3>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="flow-num n">1</div>
+              <div class="flow-body"><h4>Claude가 Edge 브라우저로 console.anthropic.com 접속</h4><p>playwright MCP가 브라우저를 자동으로 엽니다.</p></div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-num a">2</div>
+              <div class="flow-body"><h4>직접 로그인 후 "로그인했어" 입력</h4><p>이메일/비밀번호는 직접 입력. 완료 후 Claude에게 알려주세요.</p></div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-num n">3</div>
+              <div class="flow-body"><h4>Claude가 API Keys 페이지로 이동 → 키 생성</h4><p>sk-ant-api03-... 형태의 키를 자동으로 생성합니다.</p></div>
+            </div>
+            <div class="flow-item" style="padding-bottom:0">
+              <div class="flow-num ok">✓</div>
+              <div class="flow-body ok"><h4>환경변수 ANTHROPIC_API_KEY 자동 등록 완료</h4><p>PowerShell 재시작 후 Claude Code가 자동으로 키를 읽어옵니다.</p></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="sub-section">
-        <h3>✅ 완료 확인</h3>
-        <div class="check-list">
-          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">Anthropic 계정 가입/로그인 완료</span></div>
-          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">API 키 발급 완료 (Claude가 환경변수에 등록함)</span></div>
+        <div class="sub-section">
+          <h3>✅ 완료 확인</h3>
+          <div class="check-list">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">Anthropic 계정 가입/로그인 완료</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">API 키 발급 완료 (Claude가 환경변수에 등록함)</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -757,6 +836,13 @@
   function toggleCheck(el) {
     el.classList.toggle('checked');
     el.querySelector('.check-box').textContent = el.classList.contains('checked') ? '✓' : '';
+  }
+
+  function switchBranch(type, btn) {
+    document.querySelectorAll('.branch-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.branch-content').forEach(c => c.style.display = 'none');
+    document.getElementById('branch-' + type).style.display = 'block';
   }
 
   function copyById(id, btn) {
