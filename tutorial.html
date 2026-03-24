@@ -509,86 +509,59 @@
 
       <!-- PRO/MAX 분기 -->
       <div id="branch-pro" class="branch-content">
-        <span class="method-badge method-manual">⌨️ 직접 명령어 입력</span>
         <div class="sub-section">
-          <h3>① PowerShell에서 아래 명령 실행</h3>
-          <div class="code-block">
-            <div class="code-topbar">
-              <div class="ctb-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-fname">PowerShell</span></div>
-              <button class="copy-btn" onclick="copyCode(this)">복사</button>
-            </div>
-            <div class="code-body">
-              <div><span class="p">PS&gt; </span><span class="c">claude</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="sub-section">
-          <h3>② 브라우저 로그인 후 연동 완료</h3>
+          <h3>③ 선택 후 진행</h3>
           <div class="flow">
             <div class="flow-item">
               <div class="flow-num n">1</div>
-              <div class="flow-body"><h4>claude 실행 시 브라우저가 자동으로 열림</h4><p>claude.ai 로그인 페이지로 이동합니다.</p></div>
+              <div class="flow-body"><h4>방향키로 <code>Claude.ai account</code> 선택 → <kbd>Enter</kbd></h4><p>선택하는 즉시 브라우저가 자동으로 열립니다.</p></div>
             </div>
             <div class="flow-item">
               <div class="flow-num a">2</div>
-              <div class="flow-body"><h4>claude.ai 계정으로 로그인</h4><p>Pro / Max 구독 계정으로 로그인하면 자동으로 연동됩니다.</p></div>
+              <div class="flow-body"><h4>열린 브라우저에서 claude.ai 로그인</h4><p>Pro / Max 구독 중인 계정으로 로그인하세요. 이메일·비밀번호는 직접 입력합니다.</p></div>
             </div>
             <div class="flow-item" style="padding-bottom:0">
               <div class="flow-num ok">✓</div>
-              <div class="flow-body ok"><h4>Claude Code 사용 준비 완료</h4><p>API 키 없이 구독 크레딧으로 바로 사용 가능합니다.</p></div>
+              <div class="flow-body ok"><h4>로그인 완료 → 대화창 자동 진입</h4><p>터미널에 <code>&gt;</code> 프롬프트가 나타나면 연동 완료입니다. API 키 없이 구독 크레딧으로 바로 사용 가능합니다.</p></div>
             </div>
           </div>
         </div>
         <div class="sub-section">
           <h3>✅ 완료 확인</h3>
           <div class="check-list">
-            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">claude 실행 후 로그인 완료, 대화창이 열렸다</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">브라우저에서 claude.ai 로그인 완료</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">터미널에 <code>&gt;</code> 프롬프트가 나타났다</span></div>
           </div>
         </div>
       </div>
 
       <!-- API KEY 분기 -->
       <div id="branch-api" class="branch-content" style="display:none">
-        <span class="method-badge method-prompt">✦ 프롬프트 붙여넣기</span>
         <div class="sub-section">
-          <h3>① <code>claude</code> 를 실행하고 대화창에 아래 프롬프트를 붙여넣으세요</h3>
-          <a href="https://console.anthropic.com" target="_blank" class="official-link">🌐 console.anthropic.com <span class="ext">API 콘솔 ↗</span></a>
-
-          <div class="prompt-box main">
-            <div class="prompt-header">
-              <span class="prompt-label">📋 Claude Code 대화창에 붙여넣기</span>
-              <button class="copy-prompt-btn" onclick="copyById('apikey-prompt',this)">전체 복사</button>
-            </div>
-            <div id="apikey-prompt" class="prompt-body">pwr(playwright)을 사용해서 아래 과정을 진행해줘:
-
-1. console.anthropic.com 에 접속해줘
-2. 회원가입 또는 로그인 페이지로 이동해줘
-   (내가 직접 로그인할게. 완료되면 알려줄게)
-3. 내가 "로그인했어" 라고 하면 API Keys 메뉴로 이동해서 새 키를 생성해줘
-4. 생성된 키(sk-ant-...)를 ANTHROPIC_API_KEY 환경변수에 영구 등록해줘:
-   [System.Environment]::SetEnvironmentVariable("ANTHROPIC_API_KEY", "발급된키", "User")</div>
-          </div>
-
-          <div class="info-box warn">
-            <span class="info-icon">⚠️</span>
-            <span>브라우저가 열리면 이메일/비밀번호로 <strong>직접 로그인</strong>하세요. 완료 후 대화창에 <strong>"로그인했어"</strong> 라고 입력하면 Claude가 나머지를 이어서 진행합니다.</span>
-          </div>
-        </div>
-
-        <div class="sub-section">
-          <h3>② 예상 흐름</h3>
+          <h3>③ 선택 후 진행</h3>
           <div class="flow">
             <div class="flow-item">
               <div class="flow-num n">1</div>
-              <div class="flow-body"><h4>Claude가 Edge 브라우저로 console.anthropic.com 접속</h4><p>playwright MCP가 브라우저를 자동으로 엽니다.</p></div>
+              <div class="flow-body">
+                <h4>방향키로 <code>Anthropic API key</code> 선택 → <kbd>Enter</kbd></h4>
+                <p>터미널에 API 키 입력 프롬프트가 나타납니다.</p>
+                <div class="code-block" style="margin-top:10px">
+                  <div class="code-topbar">
+                    <div class="ctb-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-fname">Claude Code</span></div>
+                  </div>
+                  <div class="code-body">
+                    <div><span class="ok">? Enter your Anthropic API key: </span><span class="cm">sk-ant-...</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="flow-item">
               <div class="flow-num a">2</div>
-              <div class="flow-body"><h4>직접 로그인 후 "로그인했어" 입력</h4><p>이메일/비밀번호는 직접 입력. 완료 후 Claude에게 알려주세요.</p></div>
-            </div>
-            <div class="flow-item">
-              <div class="flow-num n">3</div>
-              <div class="flow-body"><h4>Claude가 API Keys 페이지로 이동 → 키 생성</h4><p>sk-ant-api03-... 형태의 키를 자동으로 생성합니다.</p></div>
+              <div class="flow-body">
+                <h4>API 키가 없다면 먼저 발급</h4>
+                <a href="https://console.anthropic.com" target="_blank" class="official-link" style="margin-bottom:10px;display:inline-flex">🌐 console.anthropic.com <span class="ext">API 콘솔 ↗</span></a>
+                <p>console.anthropic.com → 로그인 → API Keys → Create Key 로 발급 후 복사해 오세요.</p>
+              </div>
             </div>
             <div class="flow-item" style="padding-bottom:0">
               <div class="flow-num ok">✓</div>
@@ -774,13 +747,46 @@
       </div>
 
       <div class="sub-section">
-        <h3>③ 설치 후 레포 클론해서 바로 시작하기</h3>
+        <h3>③ 나만의 첫 번째 레포지토리 만들기</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">gh CLI로 GitHub 레포를 만들고, 로컬 폴더와 연결해 첫 커밋까지 올려봅니다.</p>
         <div class="prompt-box secondary">
           <div class="prompt-header">
-            <span class="prompt-label">📋 레포 클론 프롬프트 (선택)</span>
-            <button class="copy-prompt-btn" onclick="copyById('clone-prompt',this)">복사</button>
+            <span class="prompt-label">📋 새 레포 생성 프롬프트 (붙여넣기)</span>
+            <button class="copy-prompt-btn" onclick="copyById('create-repo-prompt',this)">복사</button>
           </div>
-          <div id="clone-prompt" class="prompt-body">gh repo clone DanielHan-Code/revapp 클론하고 해당 폴더로 이동해줘</div>
+          <div id="create-repo-prompt" class="prompt-body">내 첫 번째 GitHub 레포지토리를 만들어줘. 아래 순서대로 진행해줘:
+
+1. gh repo create my-first-project --public --description "나의 첫 번째 프로젝트" 로 레포 생성
+
+2. 로컬에 폴더 만들고 git 초기화:
+   mkdir my-first-project
+   cd my-first-project
+   git init
+
+3. README.md 파일 만들어줘 (프로젝트 이름과 간단한 설명 포함)
+
+4. 첫 커밋하고 GitHub에 푸시해줘:
+   git add .
+   git commit -m "first commit"
+   git branch -M main
+   git remote add origin (레포 URL)
+   git push -u origin main
+
+5. 완료 후 gh repo view --web 으로 브라우저에서 열어줘</div>
+        </div>
+        <div class="flow" style="margin-top:16px">
+          <div class="flow-item">
+            <div class="flow-num n">1</div>
+            <div class="flow-body"><h4>gh CLI로 GitHub에 레포 생성</h4><p>원격 레포지토리가 자동으로 만들어짐</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n">2</div>
+            <div class="flow-body"><h4>로컬 폴더 초기화 &amp; README 작성</h4><p><code>git init</code> → Claude가 README.md 자동 생성</p></div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num ok">✓</div>
+            <div class="flow-body ok"><h4>첫 커밋 &amp; push 완료</h4><p>브라우저에서 내 레포지토리 확인 가능</p></div>
+          </div>
         </div>
       </div>
 
@@ -789,6 +795,8 @@
         <div class="check-list">
           <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">GitHub 계정 가입/로그인 완료</span></div>
           <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label"><code>gh auth status</code>에서 로그인 상태 확인됨</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">새 레포지토리 생성 및 첫 커밋 push 완료</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">브라우저에서 내 GitHub 레포지토리 확인됨</span></div>
         </div>
       </div>
     </div>
@@ -804,7 +812,7 @@
         <div class="done-actions">
           <a href="index.html" class="btn btn-ghost">← 전체 가이드</a>
           <a href="https://docs.anthropic.com/ko/docs/claude-code" target="_blank" class="btn btn-primary">공식 문서 →</a>
-          <a href="https://github.com/DanielHan-Code" target="_blank" class="btn btn-success">내 GitHub →</a>
+          <a href="https://github.com" target="_blank" class="btn btn-success">내 GitHub 열기 →</a>
         </div>
         <div class="done-grid">
           <div class="done-item">
