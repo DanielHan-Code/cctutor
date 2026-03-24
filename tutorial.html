@@ -433,10 +433,10 @@
             </div>
           </div>
           <div class="flow-item" style="padding-bottom:0">
-            <div class="flow-num ok">✓</div>
-            <div class="flow-body ok">
-              <h4>Claude Code 대화창 진입 완료</h4>
-              <p>초기 설정이 끝나면 <code>&gt;</code> 프롬프트가 나타납니다. 이제 말을 걸 수 있어요.</p>
+            <div class="flow-num n">4</div>
+            <div class="flow-body">
+              <h4>연결 방식 선택 화면이 나타남</h4>
+              <p>Claude.ai 계정 또는 API 키 중 하나를 선택합니다. 이 단계는 <strong>Step 3</strong>에서 이어서 진행합니다.</p>
             </div>
           </div>
         </div>
@@ -447,7 +447,8 @@
         <div class="check-list">
           <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">이용약관 동의 완료</span></div>
           <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">컬러 테마 선택 완료</span></div>
-          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label"><code>&gt;</code> 프롬프트가 나타나 대화창이 열렸다</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">자동 업데이트 설정 완료</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">연결 방식 선택 화면까지 진입했다</span></div>
         </div>
       </div>
     </div>
@@ -463,6 +464,30 @@
           <p>사용 중인 요금제에 따라 연동 방식이 다릅니다. 아래에서 해당하는 방식을 선택하세요.</p>
         </div>
       </div>
+
+      <div class="sub-section">
+        <h3>① Claude Code가 연결 방식을 묻습니다</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">
+          초기 설정 마지막 단계에서 아래와 같은 선택 화면이 나타납니다.
+        </p>
+        <div class="code-block" style="margin-bottom:16px">
+          <div class="code-topbar">
+            <div class="ctb-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-fname">Claude Code — 연결 방식 선택</span></div>
+          </div>
+          <div class="code-body">
+            <div><span class="ok">? How would you like to authenticate with Claude?</span></div>
+            <div>&nbsp;</div>
+            <div><span class="c">❯ Claude.ai account </span><span class="cm">(Pro / Max 구독)</span></div>
+            <div><span class="c">  Anthropic API key </span><span class="cm">(API 키 직접 입력)</span></div>
+          </div>
+        </div>
+        <div class="info-box info">
+          <span class="info-icon">ℹ️</span>
+          <span>방향키로 선택 후 <kbd>Enter</kbd>. 아래에서 해당하는 방식을 선택하면 이후 단계를 안내해 드립니다.</span>
+        </div>
+      </div>
+
+      <h3 style="font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px">② 연결 방식 선택</h3>
 
       <!-- 분기 선택 -->
       <div class="branch-selector">
@@ -815,7 +840,7 @@
   const STEPS = [
     { label: "Node.js + Git 설치" },
     { label: "Claude Code 설치" },
-    { label: "API 키 발급" },
+    { label: "Claude 계정 연동" },
     { label: "MCP 서버 설치" },
     { label: "GitHub 연동" },
   ];
