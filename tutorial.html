@@ -379,10 +379,10 @@
       </div>
 
       <div class="sub-section">
-        <h3>② 설치 확인 후 Claude Code 시작</h3>
+        <h3>② 설치 확인</h3>
         <div class="code-block">
           <div class="code-topbar">
-            <div class="ctb-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-fname">PowerShell — 설치 확인</span></div>
+            <div class="ctb-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-fname">PowerShell</span></div>
             <button class="copy-btn" onclick="copyCode(this)">복사</button>
           </div>
           <div class="code-body">
@@ -390,25 +390,64 @@
             <div><span class="ok">@anthropic-ai/claude-code@1.x.x</span></div>
           </div>
         </div>
-        <div class="code-block" style="margin-top:8px">
+      </div>
+
+      <div class="sub-section">
+        <h3>③ 최초 실행 — 초기 설정</h3>
+        <div class="code-block" style="margin-bottom:20px">
           <div class="code-topbar">
             <div class="ctb-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-fname">PowerShell — Claude Code 실행</span></div>
             <button class="copy-btn" onclick="copyCode(this)">복사</button>
           </div>
           <div class="code-body">
-            <div><span class="p">PS&gt; </span><span class="c">claude</span>   <span class="cm"># Claude Code 대화창 실행!</span></div>
+            <div><span class="p">PS&gt; </span><span class="c">claude</span></div>
           </div>
         </div>
-        <div class="info-box tip">
-          <span class="info-icon">💡</span>
-          <span>최초 실행 시 이용약관 동의 화면이 나옵니다. <kbd>Enter</kbd>를 눌러 동의하면 됩니다.</span>
+
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">최초 실행 시 아래 순서로 초기 설정 화면이 나옵니다. 순서대로 따라하세요.</p>
+
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num n">1</div>
+            <div class="flow-body">
+              <h4>이용약관 동의</h4>
+              <p>약관 내용이 표시됩니다. <kbd>Enter</kbd>를 눌러 동의하고 넘어가세요.</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n">2</div>
+            <div class="flow-body">
+              <h4>컬러 테마 선택</h4>
+              <p>다크 / 라이트 / 다크-달록 등 테마를 고릅니다. 방향키로 선택 후 <kbd>Enter</kbd>.</p>
+              <div class="info-box info" style="margin-top:10px">
+                <span class="info-icon">💡</span>
+                <span>나중에 바꾸려면 Claude Code 대화창에서 <code>/config</code> 입력 후 변경 가능합니다.</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n">3</div>
+            <div class="flow-body">
+              <h4>자동 업데이트 설정</h4>
+              <p>자동 업데이트 여부를 묻습니다. 권장: <kbd>Y</kbd> (항상 최신 버전 유지).</p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num ok">✓</div>
+            <div class="flow-body ok">
+              <h4>Claude Code 대화창 진입 완료</h4>
+              <p>초기 설정이 끝나면 <code>&gt;</code> 프롬프트가 나타납니다. 이제 말을 걸 수 있어요.</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="sub-section">
         <h3>✅ 완료 확인</h3>
         <div class="check-list">
-          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label"><code>claude</code> 명령 실행 후 대화창이 열렸다</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">이용약관 동의 완료</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">컬러 테마 선택 완료</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label"><code>&gt;</code> 프롬프트가 나타나 대화창이 열렸다</span></div>
         </div>
       </div>
     </div>
