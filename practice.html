@@ -66,7 +66,8 @@
     /* HERO */
     .hero {
       max-width: 1100px; margin: 0 auto;
-      padding: 64px 24px 48px;
+      padding: 72px 24px 56px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
     }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 6px;
@@ -75,8 +76,67 @@
       padding: 5px 12px; border-radius: 99px;
       margin-bottom: 20px; letter-spacing: .5px;
     }
-    .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.2; margin-bottom: 12px; letter-spacing: -1px; }
-    .hero p { font-size: 17px; color: var(--muted); max-width: 520px; }
+    .hero h1 {
+      font-size: 46px; font-weight: 800; line-height: 1.15;
+      margin-bottom: 16px; letter-spacing: -2px;
+    }
+    .hero h1 .hl { color: var(--accent); }
+    .hero-sub { font-size: 17px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
+    .hero-stats { display: flex; flex-direction: column; gap: 12px; }
+    .hero-stat {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 14px; color: var(--muted);
+    }
+    .hero-stat-dot {
+      width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .hero-stat-dot.orange { background: rgba(249,115,22,.15); }
+    .hero-stat-dot.green  { background: rgba(34,197,94,.12); }
+    .hero-stat-dot.blue   { background: rgba(59,130,246,.12); }
+    .hero-stat strong { color: var(--text); }
+
+    /* HERO PREVIEW */
+    .hero-preview { position: relative; }
+    .preview-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .preview-bar {
+      background: var(--surface2); padding: 10px 14px;
+      display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border);
+    }
+    .preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .preview-url {
+      flex: 1; background: var(--bg); border-radius: 5px;
+      padding: 4px 10px; font-size: 11px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace; margin-left: 6px;
+    }
+    .preview-body { padding: 20px; }
+    .preview-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+    .preview-kpi {
+      background: var(--surface2); border-radius: 8px; padding: 10px;
+      text-align: center; border: 1px solid var(--border);
+    }
+    .preview-kpi-label { font-size: 9px; color: var(--muted); margin-bottom: 4px; }
+    .preview-kpi-val { font-size: 15px; font-weight: 700; }
+    .preview-kpi-val.green { color: var(--green); }
+    .preview-kpi-val.orange { color: var(--accent); }
+    .preview-chart-label { font-size: 10px; color: var(--muted); margin-bottom: 8px; }
+    .preview-bars { display: flex; align-items: flex-end; gap: 5px; height: 64px; }
+    .preview-bar-pair { display: flex; gap: 2px; align-items: flex-end; flex: 1; }
+    .preview-bar-item { flex: 1; border-radius: 3px 3px 0 0; min-width: 6px; }
+    .preview-badge {
+      position: absolute; top: -12px; right: -12px;
+      background: var(--accent); color: #fff;
+      font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 99px;
+      box-shadow: 0 4px 12px rgba(249,115,22,.4);
+    }
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; gap: 40px; }
+      .hero h1 { font-size: 32px; }
+      .hero-preview { display: none; }
+    }
 
     /* FILTER TABS */
     .filter-wrap {
@@ -267,9 +327,70 @@
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow">⚡ Claude Code 실습 예제</div>
-  <h1>직접 만들어보세요</h1>
-  <p>프롬프트만 붙여넣으면 Claude가 코드를 짜줍니다.<br/>기초부터 심화까지 단계별로 도전해보세요.</p>
+  <div>
+    <div class="hero-eyebrow">⚡ Claude Code 실습 예제</div>
+    <h1>프롬프트 하나로<br/><span class="hl">실무 도구</span>가<br/>완성됩니다</h1>
+    <p class="hero-sub">코딩을 몰라도 괜찮습니다. 아래 프롬프트를 Claude Code에 붙여넣으면 실제로 쓸 수 있는 도구가 뚝딱 만들어집니다.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-dot orange">✦</div>
+        <span><strong>코딩 지식 불필요</strong> — 프롬프트만 복사해서 붙여넣기</span>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-dot green">⏱</div>
+        <span><strong>20~45분</strong>이면 완성 + GitHub Pages 배포까지</span>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-dot blue">🔗</div>
+        <span>만든 것을 <strong>링크 하나</strong>로 바로 공유 가능</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-preview">
+    <span class="preview-badge">📊 완성 예시</span>
+    <div class="preview-card">
+      <div class="preview-bar">
+        <div class="preview-dot" style="background:#ef4444"></div>
+        <div class="preview-dot" style="background:#eab308"></div>
+        <div class="preview-dot" style="background:#22c55e"></div>
+        <div class="preview-url">username.github.io/sales-dashboard</div>
+      </div>
+      <div class="preview-body">
+        <div style="font-size:11px;font-weight:700;margin-bottom:12px;color:var(--muted)">영업팀 실적 대시보드 2024</div>
+        <div class="preview-kpi-row">
+          <div class="preview-kpi">
+            <div class="preview-kpi-label">총 목표</div>
+            <div class="preview-kpi-val">78억</div>
+          </div>
+          <div class="preview-kpi">
+            <div class="preview-kpi-label">총 실적</div>
+            <div class="preview-kpi-val orange">83억</div>
+          </div>
+          <div class="preview-kpi">
+            <div class="preview-kpi-label">달성률</div>
+            <div class="preview-kpi-val green">106%</div>
+          </div>
+        </div>
+        <div class="preview-chart-label">월별 목표 vs 실적</div>
+        <div class="preview-bars">
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:38px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:30px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:38px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:44px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:40px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:46px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:40px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:36px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:44px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:48px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:44px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:54px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:48px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:46px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:48px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:44px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:52px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:58px;background:var(--green)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:52px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:62px;background:var(--green)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:56px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:52px;background:var(--accent)"></div></div>
+          <div class="preview-bar-pair"><div class="preview-bar-item" style="height:60px;background:rgba(59,130,246,.5)"></div><div class="preview-bar-item" style="height:64px;background:var(--green)"></div></div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-top:8px;text-align:right">■ 목표  ■ 실적</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- FILTER -->
