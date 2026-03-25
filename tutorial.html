@@ -99,6 +99,17 @@
     }
     .snav-item.active .snav-dot { background:var(--accent); border-color:var(--accent); color:#fff; }
     .snav-item.done  .snav-dot { background:rgba(34,197,94,.15); border-color:var(--green); color:var(--green); }
+    .sidebar-practice {
+      display:flex; align-items:center; gap:10px;
+      margin-top:16px; padding:12px; border-radius:9px;
+      background: rgba(249,115,22,.08); border:1px solid rgba(249,115,22,.25);
+      text-decoration:none; transition: border-color .2s, background .2s;
+    }
+    .sidebar-practice:hover { border-color:var(--accent); background:rgba(249,115,22,.14); }
+    .sidebar-practice-icon { font-size:20px; flex-shrink:0; }
+    .sidebar-practice-title { font-size:13px; font-weight:700; color:var(--text); }
+    .sidebar-practice-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+    .sidebar-practice-arrow { font-size:14px; color:var(--accent); margin-left:auto; flex-shrink:0; }
 
     /* BRANCH SELECTOR */
     .branch-selector {
@@ -303,6 +314,15 @@
     </div>
     <div class="sidebar-title">단계 목록</div>
     <div class="step-nav" id="stepNav"></div>
+
+    <a href="practice.html" class="sidebar-practice">
+      <div class="sidebar-practice-icon">🚀</div>
+      <div>
+        <div class="sidebar-practice-title">실습 예제</div>
+        <div class="sidebar-practice-sub">설치 완료 후 바로 도전</div>
+      </div>
+      <span class="sidebar-practice-arrow">→</span>
+    </a>
   </aside>
 
   <main class="content" id="mainContent">
