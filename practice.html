@@ -482,21 +482,53 @@
       </div>
 
       <div class="ex-section">
-        <div class="ex-section-title">② GitHub Pages로 배포</div>
+        <div class="ex-section-title">② GitHub 레포 만들고 배포하기</div>
+        <div class="flow" style="margin-bottom:14px">
+          <div class="flow-item">
+            <div class="flow-num n">1</div>
+            <div class="flow-body"><h4>GitHub 레포지토리 생성</h4><p>gh CLI로 원격 레포를 만듭니다</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n">2</div>
+            <div class="flow-body"><h4>로컬 git 초기화 &amp; 첫 커밋</h4><p>파일을 git으로 관리 시작</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n">3</div>
+            <div class="flow-body"><h4>GitHub에 push</h4><p>로컬 코드를 원격 레포에 업로드</p></div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num ok">✓</div>
+            <div class="flow-body ok"><h4>GitHub Pages 활성화</h4><p>Settings → Pages → main 브랜치 선택 → 배포 URL 생성</p></div>
+          </div>
+        </div>
         <div class="prompt-box secondary">
           <div class="prompt-header">
-            <span class="prompt-label">💬 배포 프롬프트</span>
+            <span class="prompt-label">💬 GitHub 배포 프롬프트</span>
             <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
           </div>
-          <div class="prompt-body">방금 만든 index.html을 GitHub Pages로 배포해줘:
-1. gh repo create sales-dashboard --public 으로 레포 생성
-2. git init, 파일 추가, 첫 커밋, push
-3. GitHub Pages 활성화 방법 알려줘 (Settings → Pages → main 브랜치)
-4. 최종 배포 URL 알려줘</div>
+          <div class="prompt-body">방금 만든 파일을 GitHub에 올리고 Pages로 배포해줘.
+
+1. 레포 생성:
+   gh repo create sales-dashboard --public --description "영업 실적 대시보드"
+
+2. git 초기화 및 첫 커밋:
+   git init
+   git add .
+   git commit -m "first commit: sales dashboard"
+
+3. GitHub에 연결하고 push:
+   git branch -M main
+   git remote add origin https://github.com/내아이디/sales-dashboard.git
+   git push -u origin main
+
+4. GitHub Pages 활성화 방법 알려줘
+   (Settings → Pages → Deploy from branch → main / root → Save)
+
+5. 완료되면 배포 URL 알려줘</div>
         </div>
         <div class="info-box">
           <span>💡</span>
-          <div>배포 URL은 <code>https://내아이디.github.io/sales-dashboard</code> 형태입니다. Push 후 1~2분 뒤 접속 가능합니다.</div>
+          <div>배포 URL: <code>https://내아이디.github.io/sales-dashboard</code> — push 후 1~2분 뒤 접속 가능합니다.</div>
         </div>
       </div>
 
@@ -598,7 +630,40 @@
       </div>
 
       <div class="ex-section">
-        <div class="ex-section-title">② 응용해보기 (선택)</div>
+        <div class="ex-section-title">② GitHub 레포 만들고 배포하기</div>
+        <div class="prompt-box secondary">
+          <div class="prompt-header">
+            <span class="prompt-label">💬 GitHub 배포 프롬프트</span>
+            <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+          </div>
+          <div class="prompt-body">방금 만든 파일을 GitHub에 올리고 Pages로 배포해줘.
+
+1. 레포 생성:
+   gh repo create time-tracker --public --description "업무 타임 트래커"
+
+2. git 초기화 및 첫 커밋:
+   git init
+   git add .
+   git commit -m "first commit: time tracker"
+
+3. GitHub에 연결하고 push:
+   git branch -M main
+   git remote add origin https://github.com/내아이디/time-tracker.git
+   git push -u origin main
+
+4. GitHub Pages 활성화 방법 알려줘
+   (Settings → Pages → Deploy from branch → main / root → Save)
+
+5. 완료되면 배포 URL 알려줘</div>
+        </div>
+        <div class="info-box">
+          <span>💡</span>
+          <div>배포 URL: <code>https://내아이디.github.io/time-tracker</code> — push 후 1~2분 뒤 접속 가능합니다.</div>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title">③ 응용해보기 (선택)</div>
         <div class="prompt-box secondary">
           <div class="prompt-header">
             <span class="prompt-label">💬 추가 개선 프롬프트</span>
@@ -625,6 +690,10 @@
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
             <span>도넛 차트가 정상 표시됨</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <span>GitHub Pages URL로 접속 가능</span>
           </div>
         </div>
       </div>
@@ -701,7 +770,40 @@
       </div>
 
       <div class="ex-section">
-        <div class="ex-section-title">② 응용해보기 (선택)</div>
+        <div class="ex-section-title">② GitHub 레포 만들고 배포하기</div>
+        <div class="prompt-box secondary">
+          <div class="prompt-header">
+            <span class="prompt-label">💬 GitHub 배포 프롬프트</span>
+            <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+          </div>
+          <div class="prompt-body">방금 만든 파일을 GitHub에 올리고 Pages로 배포해줘.
+
+1. 레포 생성:
+   gh repo create csv-analyzer --public --description "CSV 데이터 분석 도구"
+
+2. git 초기화 및 첫 커밋:
+   git init
+   git add .
+   git commit -m "first commit: csv analyzer"
+
+3. GitHub에 연결하고 push:
+   git branch -M main
+   git remote add origin https://github.com/내아이디/csv-analyzer.git
+   git push -u origin main
+
+4. GitHub Pages 활성화 방법 알려줘
+   (Settings → Pages → Deploy from branch → main / root → Save)
+
+5. 완료되면 배포 URL 알려줘</div>
+        </div>
+        <div class="info-box">
+          <span>💡</span>
+          <div>배포 URL: <code>https://내아이디.github.io/csv-analyzer</code> — push 후 1~2분 뒤 접속 가능합니다.</div>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title">③ 응용해보기 (선택)</div>
         <div class="prompt-box secondary">
           <div class="prompt-header">
             <span class="prompt-label">💬 추가 개선 프롬프트</span>
@@ -728,6 +830,10 @@
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
             <span>컬럼 선택 시 차트가 동적으로 변경됨</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <span>GitHub Pages URL로 접속 가능</span>
           </div>
         </div>
       </div>
@@ -806,7 +912,49 @@
       </div>
 
       <div class="ex-section">
-        <div class="ex-section-title">② 응용해보기 (선택)</div>
+        <div class="ex-section-title">② GitHub 레포 만들고 배포하기</div>
+        <div class="flow-diagram">
+          <div class="flow-item">
+            <div class="flow-num">1</div>
+            <div class="flow-body"><h4>레포지토리 생성</h4><p>gh CLI로 GitHub 레포 생성</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">2</div>
+            <div class="flow-body"><h4>Git 초기화 & 푸시</h4><p>로컬 파일을 GitHub에 업로드</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">3</div>
+            <div class="flow-body"><h4>GitHub Pages 활성화</h4><p>Settings에서 Pages 배포 설정</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num ok">✓</div>
+            <div class="flow-body ok"><h4>URL 확인</h4><p>배포된 주소로 접속 확인</p></div>
+          </div>
+        </div>
+        <div class="prompt-box">
+          <div class="prompt-header">
+            <span class="prompt-label">💬 Claude Code에 붙여넣기</span>
+            <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+          </div>
+          <div class="prompt-body">방금 만든 경비 정산기를 GitHub에 배포해줘.
+
+1. gh repo create expense-calculator --public --description "팀 경비 정산 계산기"
+2. git init
+3. git add .
+4. git commit -m "first commit: 팀 경비 정산 계산기"
+5. git branch -M main
+6. git remote add origin https://github.com/[내 유저명]/expense-calculator.git
+7. git push -u origin main
+
+그 다음 GitHub Pages 설정 방법도 알려줘:
+Settings → Pages → Deploy from branch → main / root → Save
+
+배포 완료 후 URL 알려줘.</div>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title">③ 응용해보기 (선택)</div>
         <div class="prompt-box secondary">
           <div class="prompt-header">
             <span class="prompt-label">💬 추가 개선 프롬프트</span>
@@ -833,6 +981,10 @@
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
             <span>인쇄/PDF 출력이 정상 동작</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <span>GitHub Pages로 배포 완료 및 URL 접속 확인</span>
           </div>
         </div>
       </div>
