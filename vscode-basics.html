@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VS Code 기초 사용법 — Claude Code 튜터리얼</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --surface: #18181b;
+      --surface2: #27272a;
+      --border: #3f3f46;
+      --accent: #f97316;
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --yellow: #eab308;
+      --vscode-blue: #007acc;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,13,15,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 17px; color: var(--text); text-decoration: none;
+      margin-right: auto;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    nav { display: flex; gap: 10px; align-items: center; }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 7px;
+      border: 1px solid var(--border); color: var(--muted);
+      font-size: 13px; font-weight: 500; text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .nav-back:hover { border-color: var(--accent); color: var(--text); }
+
+    /* LAYOUT */
+    .layout { display:flex; flex:1; max-width:1100px; margin:0 auto; width:100%; padding:40px 24px; gap:40px; align-items:flex-start; }
+
+    /* SIDEBAR */
+    .sidebar { width:240px; flex-shrink:0; position:sticky; top:80px; }
+    .sidebar-title { font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+
+    .total-progress { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:20px; }
+    .total-progress-row { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:10px; }
+    .total-progress-row span:last-child { color:var(--accent); font-weight:600; }
+    .prog-bg { background:var(--surface2); border-radius:99px; height:6px; overflow:hidden; }
+    .prog-fill { height:100%; background:linear-gradient(90deg,var(--accent),#fb923c); border-radius:99px; transition:width .5s ease; width:0%; }
+
+    .step-nav { display:flex; flex-direction:column; gap:3px; }
+    .snav-item {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 10px; border-radius:7px; cursor:pointer;
+      color:var(--muted); font-size:13px; font-weight:500;
+      border:none; background:none; text-align:left; width:100%;
+      transition:background .15s;
+    }
+    .snav-item:hover { background:var(--surface); color:var(--text); }
+    .snav-item.active { background:var(--surface); color:var(--text); }
+    .snav-item.done { color:var(--green); }
+    .snav-dot {
+      width:22px; height:22px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:700; flex-shrink:0;
+      background:var(--surface2); border:1px solid var(--border); color:var(--muted);
+      transition:all .2s;
+    }
+    .snav-item.active .snav-dot { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .snav-item.done  .snav-dot { background:rgba(34,197,94,.15); border-color:var(--green); color:var(--green); }
+
+    .sidebar-link {
+      display:flex; align-items:center; gap:10px;
+      margin-top:16px; padding:12px; border-radius:9px;
+      background: rgba(249,115,22,.08); border:1px solid rgba(249,115,22,.25);
+      text-decoration:none; transition: border-color .2s, background .2s;
+    }
+    .sidebar-link:hover { border-color:var(--accent); background:rgba(249,115,22,.14); }
+    .sidebar-link-icon { font-size:20px; flex-shrink:0; }
+    .sidebar-link-title { font-size:13px; font-weight:700; color:var(--text); }
+    .sidebar-link-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+    .sidebar-link-arrow { font-size:14px; color:var(--accent); margin-left:auto; flex-shrink:0; }
+
+    /* CONTENT */
+    .content { flex:1; min-width:0; }
+    .step-card { display:none; animation:fadeIn .3s ease; }
+    .step-card.visible { display:block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    .step-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+    .step-badge { background:var(--accent); color:#fff; font-size:13px; font-weight:700; padding:4px 12px; border-radius:99px; white-space:nowrap; margin-top:4px; flex-shrink:0; }
+    .step-header-text h2 { font-size:28px; font-weight:700; letter-spacing:-.8px; margin-bottom:8px; }
+    .step-header-text p { font-size:15px; color:var(--muted); line-height:1.7; }
+
+    .sub-section { margin-bottom:28px; }
+    .sub-section h3 { font-size:15px; font-weight:600; margin-bottom:12px; }
+    .sub-section > p { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:12px; }
+
+    /* VS CODE MOCKUP */
+    .vscode-mock {
+      background: #1e1e1e; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+      margin-bottom: 16px;
+    }
+    .vscode-titlebar {
+      background: #323233; padding: 8px 14px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .vscode-dots { display: flex; gap: 6px; }
+    .vscode-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .vscode-dot.r { background: #ff5f57; }
+    .vscode-dot.y { background: #febc2e; }
+    .vscode-dot.g { background: #28c840; }
+    .vscode-title-text { flex:1; text-align:center; font-size:11px; color:rgba(255,255,255,.35); font-family:'JetBrains Mono',monospace; }
+    .vscode-layout { display:flex; }
+    .vscode-activitybar {
+      width:48px; background:#333333; display:flex; flex-direction:column;
+      align-items:center; padding-top:8px; gap:4px; flex-shrink:0;
+      border-right:1px solid rgba(255,255,255,.06);
+    }
+    .vs-icon {
+      width:36px; height:36px; border-radius:4px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:16px; color:rgba(255,255,255,.45); cursor:default;
+    }
+    .vs-icon.active { color:#fff; border-left:2px solid #007acc; border-radius:0; }
+    .vs-icon.highlight { background:rgba(255,255,255,.1); color:#ccc; }
+    .vs-sidebar {
+      width:210px; background:#252526; border-right:1px solid rgba(255,255,255,.06);
+      display:flex; flex-direction:column; flex-shrink:0;
+    }
+    .vs-sidebar-head {
+      font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+      color:rgba(255,255,255,.4); padding:12px 12px 8px;
+    }
+    .vs-file {
+      display:flex; align-items:center; gap:6px;
+      padding:3px 12px; font-size:12px; color:rgba(255,255,255,.7);
+      font-family:'JetBrains Mono',monospace; cursor:default; user-select:none;
+    }
+    .vs-file:hover { background:rgba(255,255,255,.07); }
+    .vs-file.sel { background:#094771; color:#fff; }
+    .vs-editor { flex:1; background:#1e1e1e; display:flex; flex-direction:column; }
+    .vs-tabs { background:#2d2d2d; display:flex; border-bottom:1px solid rgba(255,255,255,.06); }
+    .vs-tab { padding:8px 18px; font-size:12px; color:rgba(255,255,255,.45); border-right:1px solid rgba(255,255,255,.06); cursor:default; font-family:'JetBrains Mono',monospace; }
+    .vs-tab.active { background:#1e1e1e; color:#fff; border-top:1px solid #007acc; }
+    .vs-code { padding:14px 18px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.9; }
+    .vs-ln { display:flex; gap:14px; }
+    .vs-num { color:rgba(255,255,255,.2); min-width:18px; text-align:right; user-select:none; }
+    .vs-status { background:#007acc; padding:2px 10px; font-size:10px; color:rgba(255,255,255,.85); display:flex; gap:14px; font-family:'JetBrains Mono',monospace; }
+
+    /* FLOW STEPS */
+    .flow { display:flex; flex-direction:column; gap:0; margin-bottom:20px; }
+    .flow-item { display:flex; gap:14px; position:relative; padding-bottom:14px; }
+    .flow-item:last-child { padding-bottom:0; }
+    .flow-item:not(:last-child)::before { content:''; position:absolute; left:18px; top:38px; bottom:0; width:2px; background:var(--border); }
+    .flow-num {
+      width:38px; height:38px; border-radius:50%; flex-shrink:0; z-index:1;
+      display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;
+    }
+    .fn { background:var(--surface2); border:2px solid var(--border); color:var(--muted); }
+    .fa { background:rgba(249,115,22,.15); border:2px solid var(--accent); color:var(--accent); }
+    .fok { background:rgba(34,197,94,.12); border:2px solid var(--green); color:var(--green); font-size:16px; }
+    .flow-body { background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:12px 16px; flex:1; }
+    .flow-body h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
+    .flow-body p { font-size:12px; color:var(--muted); line-height:1.65; }
+
+    /* INFO BOX */
+    .info-box { border-radius:8px; padding:12px 16px; font-size:13px; line-height:1.65; display:flex; gap:10px; align-items:flex-start; margin-bottom:14px; }
+    .info-box.tip  { background:rgba(34,197,94,.08);  border:1px solid rgba(34,197,94,.22);  color:#86efac; }
+    .info-box.warn { background:rgba(234,179,8,.08);  border:1px solid rgba(234,179,8,.25);  color:#fde68a; }
+    .info-box.info { background:rgba(59,130,246,.08); border:1px solid rgba(59,130,246,.2);  color:#93c5fd; }
+    .info-icon { font-size:15px; flex-shrink:0; margin-top:1px; }
+
+    /* KBD */
+    .kbd-combo { display:inline-flex; align-items:center; gap:4px; margin:0 2px; }
+    kbd {
+      display:inline-flex; align-items:center; justify-content:center;
+      background:var(--surface2); border:1px solid var(--border);
+      border-radius:4px; padding:2px 7px;
+      font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text);
+      box-shadow:0 1px 0 var(--border);
+    }
+    code { background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:1px 6px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+
+    /* SHORTCUT TABLE */
+    .sc-table { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:20px; border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+    .sc-table th { text-align:left; padding:9px 16px; font-size:11px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+    .sc-table td { padding:11px 16px; border-top:1px solid rgba(63,63,70,.5); vertical-align:middle; }
+    .sc-table tr:hover td { background:rgba(255,255,255,.02); }
+
+    /* CHECK LIST */
+    .check-list { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+    .check-item { display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 16px; cursor:pointer; transition:border-color .2s; user-select:none; }
+    .check-item:hover { border-color:var(--accent); }
+    .check-item.checked { border-color:var(--green); background:rgba(34,197,94,.06); }
+    .check-box { width:20px; height:20px; border-radius:5px; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; font-size:12px; }
+    .check-item.checked .check-box { background:var(--green); border-color:var(--green); color:#fff; }
+    .check-item-label { font-size:14px; font-weight:500; }
+    .check-item.checked .check-item-label { color:var(--green); text-decoration:line-through; opacity:.7; }
+
+    /* NAV */
+    .nav-bar { display:flex; align-items:center; justify-content:space-between; margin-top:40px; padding-top:24px; border-top:1px solid var(--border); }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:11px 24px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all .15s; }
+    .btn-ghost  { background:var(--surface2); color:var(--muted); border:1px solid var(--border); }
+    .btn-ghost:hover { color:var(--text); border-color:var(--muted); }
+    .btn-primary { background:var(--accent); color:#fff; }
+    .btn-primary:hover { background:#fb923c; transform:translateY(-1px); }
+    .btn-success { background:var(--green); color:#fff; }
+    .btn-success:hover { background:#16a34a; }
+    .step-counter { font-size:13px; color:var(--muted); font-weight:500; }
+
+    /* DONE */
+    .done-card { text-align:center; padding:60px 40px; }
+    .done-icon { width:72px; height:72px; background:rgba(34,197,94,.12); border:2px solid var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 24px; }
+    .done-card h2 { font-size:30px; font-weight:700; margin-bottom:12px; letter-spacing:-1px; }
+    .done-card > p { font-size:15px; color:var(--muted); max-width:460px; margin:0 auto 32px; line-height:1.7; }
+    .done-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">✦</div>
+      Claude Code 튜터리얼
+    </a>
+    <nav>
+      <a href="index.html" class="nav-back">← 메인페이지</a>
+      <a href="tutorial-vscode.html" class="nav-back">설치 튜터리얼</a>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <p class="sidebar-title">전체 진행률</p>
+    <div class="total-progress">
+      <div class="total-progress-row">
+        <span>완료한 단계</span>
+        <span id="progressText">0 / 3</span>
+      </div>
+      <div class="prog-bg"><div class="prog-fill" id="progressBar"></div></div>
+    </div>
+
+    <p class="sidebar-title">단계 목록</p>
+    <div class="step-nav" id="stepNav"></div>
+
+    <a href="tutorial-vscode.html" class="sidebar-link">
+      <span class="sidebar-link-icon">🔌</span>
+      <div>
+        <div class="sidebar-link-title">설치 튜터리얼</div>
+        <div class="sidebar-link-sub">Claude Code 익스텐션 설치</div>
+      </div>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ══════════════════════════════════════
+         STEP 0  폴더 열기
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="0">
+      <div class="step-header">
+        <span class="step-badge">Step 1</span>
+        <div class="step-header-text">
+          <h2>폴더 열기</h2>
+          <p>Claude Code는 <strong>폴더(프로젝트) 단위</strong>로 작업합니다.<br/>
+          작업할 폴더를 VS Code에 먼저 열어야 Claude와 함께 그 안의 파일을 다룰 수 있습니다.</p>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>왜 폴더를 열어야 하나요?</h3>
+        <div class="info-box info">
+          <span class="info-icon">ℹ️</span>
+          <div>
+            Claude Code는 열려 있는 폴더 안의 파일들을 읽고 수정합니다.<br/>
+            폴더를 열지 않으면 Claude가 "어디에 파일을 만들까요?" 할 때 저장 위치가 없어 곤란해집니다.<br/>
+            <strong>작업 시작 전에 항상 폴더부터 여세요.</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>폴더 여는 방법 — 3가지</h3>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num fn">1</div>
+            <div class="flow-body">
+              <h4>메뉴에서 열기 (가장 기본)</h4>
+              <p>VS Code 상단 메뉴 <strong>File → Open Folder…</strong> 클릭 → 폴더 선택 → <strong>폴더 선택</strong> 버튼</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num fn">2</div>
+            <div class="flow-body">
+              <h4>드래그 앤 드롭 (제일 간편)</h4>
+              <p>윈도우 파일 탐색기에서 <strong>폴더 아이콘</strong>을 마우스로 잡아 VS Code 창 위에 놓으면 바로 열립니다.</p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num fn">3</div>
+            <div class="flow-body">
+              <h4>단축키</h4>
+              <p><span class="kbd-combo"><kbd>Ctrl</kbd>+<kbd>K</kbd></span> 를 눌렀다 떼고, 바로 <span class="kbd-combo"><kbd>Ctrl</kbd>+<kbd>O</kbd></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>폴더가 열리면 이렇게 보입니다</h3>
+        <div class="vscode-mock">
+          <div class="vscode-titlebar">
+            <div class="vscode-dots">
+              <div class="vscode-dot r"></div><div class="vscode-dot y"></div><div class="vscode-dot g"></div>
+            </div>
+            <div class="vscode-title-text">my-project — Visual Studio Code</div>
+          </div>
+          <div class="vscode-layout" style="height:260px">
+            <div class="vscode-activitybar">
+              <div class="vs-icon active">📁</div>
+              <div class="vs-icon">🔍</div>
+              <div class="vs-icon">🔀</div>
+              <div class="vs-icon" style="color:#f97316">✦</div><!-- Claude -->
+              <div class="vs-icon">⬛</div>
+            </div>
+            <div class="vs-sidebar">
+              <div class="vs-sidebar-head">탐색기</div>
+              <div style="padding:4px 0">
+                <div class="vs-file" style="color:#e2c08d">▾ 📂 MY-PROJECT</div>
+                <div class="vs-file sel" style="padding-left:28px">📄 index.html</div>
+                <div class="vs-file" style="padding-left:28px">📄 style.css</div>
+                <div class="vs-file" style="padding-left:28px">📄 app.js</div>
+                <div class="vs-file" style="padding-left:28px">📄 README.md</div>
+              </div>
+            </div>
+            <div class="vs-editor">
+              <div class="vs-tabs">
+                <div class="vs-tab active">index.html</div>
+              </div>
+              <div class="vs-code">
+                <div class="vs-ln"><span class="vs-num">1</span><span style="color:#569cd6">&lt;!DOCTYPE html&gt;</span></div>
+                <div class="vs-ln"><span class="vs-num">2</span><span style="color:#569cd6">&lt;html&gt;</span></div>
+                <div class="vs-ln"><span class="vs-num">3</span><span style="color:#569cd6">&lt;head&gt;</span></div>
+                <div class="vs-ln"><span class="vs-num">4</span><span style="color:#d4d4d4">  …</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="vs-status"><span>🔀 main</span><span>my-project</span></div>
+        </div>
+        <p style="font-size:13px;color:var(--muted)">왼쪽에 내 프로젝트 파일들이 보이고, 하단에 폴더 이름이 표시되면 성공입니다.</p>
+      </div>
+
+      <div class="sub-section">
+        <h3>💡 자주 쓰는 팁</h3>
+        <div class="info-box tip">
+          <span class="info-icon">💡</span>
+          <div><strong>File → Open Recent</strong> 에서 최근에 열었던 폴더를 다시 빠르게 열 수 있습니다.<br/>
+          매번 탐색하지 않아도 돼서 편리합니다.</div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>✅ 완료 확인</h3>
+        <div class="check-list">
+          <div class="check-item" onclick="toggle(this)">
+            <div class="check-box"></div>
+            <span class="check-item-label">VS Code에 작업할 폴더를 열었다</span>
+          </div>
+          <div class="check-item" onclick="toggle(this)">
+            <div class="check-box"></div>
+            <span class="check-item-label">왼쪽에 내 파일 목록이 보인다</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <div></div>
+        <span class="step-counter">1 / 3</span>
+        <button class="btn btn-primary" onclick="goTo(1)">다음 →</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 1  탐색기 (Explorer)
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="1">
+      <div class="step-header">
+        <span class="step-badge">Step 2</span>
+        <div class="step-header-text">
+          <h2>탐색기 (Explorer)</h2>
+          <p>왼쪽 맨 위 📁 아이콘을 누르면 열리는 패널입니다.<br/>
+          프로젝트 안의 <strong>파일과 폴더 목록</strong>을 보여주는 곳이에요.</p>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>탐색기로 할 수 있는 것들</h3>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num fn">👁</div>
+            <div class="flow-body">
+              <h4>파일 열기</h4>
+              <p>파일 이름을 클릭하면 오른쪽 에디터 영역에서 내용을 볼 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num fn">📄</div>
+            <div class="flow-body">
+              <h4>새 파일 / 새 폴더 만들기</h4>
+              <p>탐색기 패널에 마우스를 올리면 상단에 <strong>📄+</strong> (새 파일), <strong>📁+</strong> (새 폴더) 아이콘이 나타납니다.<br/>
+              클릭 → 이름 입력 → <kbd>Enter</kbd></p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num fn">🖱</div>
+            <div class="flow-body">
+              <h4>파일 우클릭 → 이름 바꾸기 / 삭제</h4>
+              <p>파일 위에서 마우스 오른쪽 버튼을 클릭하면 이름 변경(Rename), 삭제(Delete) 등 메뉴가 나타납니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>Claude Code와 함께 쓸 때</h3>
+        <div class="info-box tip">
+          <span class="info-icon">💡</span>
+          <div>
+            Claude가 파일을 새로 만들거나 수정하면 탐색기에 바로 반영됩니다.<br/>
+            <strong>파일이 잘 만들어졌는지</strong> 탐색기를 보면서 확인하세요.<br/>
+            수정된 파일 옆에는 작은 점(●)이 표시되어 저장이 안 된 상태를 알려줍니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>유용한 단축키</h3>
+        <table class="sc-table">
+          <thead><tr><th>기능</th><th>단축키</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>탐색기 열기/닫기</td>
+              <td><span class="kbd-combo"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd></span></td>
+            </tr>
+            <tr>
+              <td>파일 이름 변경</td>
+              <td><kbd>F2</kbd></td>
+            </tr>
+            <tr>
+              <td>파일 이름으로 빠르게 열기</td>
+              <td><span class="kbd-combo"><kbd>Ctrl</kbd>+<kbd>P</kbd></span> 후 파일명 입력</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="info-box info">
+          <span class="info-icon">ℹ️</span>
+          <div><strong>Ctrl+P</strong> 는 파일명 일부만 입력해도 찾아줍니다. 파일이 많아질수록 정말 편리합니다.</div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>✅ 완료 확인</h3>
+        <div class="check-list">
+          <div class="check-item" onclick="toggle(this)">
+            <div class="check-box"></div>
+            <span class="check-item-label">탐색기에서 파일을 클릭해 에디터에서 열어봤다</span>
+          </div>
+          <div class="check-item" onclick="toggle(this)">
+            <div class="check-box"></div>
+            <span class="check-item-label">파일 위에서 우클릭해 메뉴를 확인해봤다</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goTo(0)">← 이전</button>
+        <span class="step-counter">2 / 3</span>
+        <button class="btn btn-primary" onclick="goTo(2)">다음 →</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 2  소스 컨트롤
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="2">
+      <div class="step-header">
+        <span class="step-badge">Step 3</span>
+        <div class="step-header-text">
+          <h2>소스 컨트롤</h2>
+          <p>왼쪽 🔀 아이콘을 누르면 열리는 패널입니다.<br/>
+          Claude가 파일을 수정했을 때 <strong>어떤 내용이 바뀌었는지</strong> 확인하는 곳입니다.</p>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>이 패널이 왜 중요한가요?</h3>
+        <div class="info-box info">
+          <span class="info-icon">ℹ️</span>
+          <div>
+            Claude Code에게 "이 파일 수정해줘"라고 부탁하면, Claude가 파일을 바꿉니다.<br/>
+            소스 컨트롤 패널에서 <strong>정확히 어떤 줄이 추가되고 삭제됐는지</strong> 빨간색/초록색으로 확인할 수 있어요.<br/>
+            "Claude가 뭘 바꿨지?" 하는 궁금증이 생길 때 여기를 보세요.
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>소스 컨트롤 패널 보는 법</h3>
+        <div class="vscode-mock">
+          <div class="vscode-titlebar">
+            <div class="vscode-dots">
+              <div class="vscode-dot r"></div><div class="vscode-dot y"></div><div class="vscode-dot g"></div>
+            </div>
+            <div class="vscode-title-text">소스 컨트롤</div>
+          </div>
+          <div class="vscode-layout" style="height:260px">
+            <div class="vscode-activitybar">
+              <div class="vs-icon">📁</div>
+              <div class="vs-icon">🔍</div>
+              <div class="vs-icon active">🔀</div>
+              <div class="vs-icon" style="color:#f97316">✦</div>
+              <div class="vs-icon">⬛</div>
+            </div>
+            <div class="vs-sidebar">
+              <div style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06)">
+                <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px">소스 컨트롤</div>
+                <div style="background:#3c3c3c;border:1px solid #555;border-radius:3px;padding:6px 10px;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:8px">커밋 메시지 입력…</div>
+                <div style="background:#0e639c;color:#fff;border-radius:3px;padding:5px;font-size:11px;text-align:center">✓  커밋</div>
+              </div>
+              <div style="padding:6px 0">
+                <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);padding:6px 12px">변경 사항 (2)</div>
+                <div style="display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;color:rgba(255,255,255,.65);font-family:'JetBrains Mono',monospace">
+                  📄 index.html
+                  <span style="margin-left:auto;background:rgba(234,179,8,.2);color:#fde68a;font-size:10px;padding:1px 5px;border-radius:3px">M</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;color:rgba(255,255,255,.65);font-family:'JetBrains Mono',monospace">
+                  📄 style.css
+                  <span style="margin-left:auto;background:rgba(34,197,94,.2);color:#86efac;font-size:10px;padding:1px 5px;border-radius:3px">U</span>
+                </div>
+              </div>
+            </div>
+            <div class="vs-editor">
+              <div style="padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.9">
+                <div style="color:rgba(255,255,255,.3);margin-bottom:8px;font-size:11px">// 변경된 내용 미리보기</div>
+                <div style="color:#f14c4c">- &lt;h1&gt;기존 제목&lt;/h1&gt;</div>
+                <div style="color:#73c991">+ &lt;h1&gt;Claude가 바꾼 제목&lt;/h1&gt;</div>
+                <div style="margin-top:6px;color:#73c991">+ &lt;p&gt;Claude가 추가한 문단&lt;/p&gt;</div>
+              </div>
+            </div>
+          </div>
+          <div class="vs-status"><span>🔀 main</span><span>↑0 ↓0</span></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.3);border-radius:6px;padding:8px 14px;font-size:12px;color:#fde68a">
+            <strong>M</strong> = 수정된 파일 (Modified)
+          </div>
+          <div style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:6px;padding:8px 14px;font-size:12px;color:#86efac">
+            <strong>U</strong> = 새로 생긴 파일 (Untracked)
+          </div>
+          <div style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:8px 14px;font-size:12px;color:#fca5a5">
+            <strong>D</strong> = 삭제된 파일 (Deleted)
+          </div>
+        </div>
+
+        <p style="font-size:14px;color:var(--muted);line-height:1.7">
+          파일 이름을 클릭하면 오른쪽에 <span style="color:#f14c4c">빨간색(삭제된 줄)</span>과 <span style="color:#73c991">초록색(추가된 줄)</span>으로 변경 내용을 한눈에 볼 수 있습니다.
+        </p>
+      </div>
+
+      <div class="sub-section">
+        <h3>변경 내용이 마음에 들 때 — 저장(커밋)하기</h3>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num fn">1</div>
+            <div class="flow-body">
+              <h4>변경된 파일 옆 <strong>+</strong> 클릭</h4>
+              <p>파일 위에 마우스를 올리면 + 가 나옵니다. 저장할 파일을 + 로 선택합니다.<br/>
+              전체 선택은 "변경 사항" 제목 옆 + 클릭</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num fn">2</div>
+            <div class="flow-body">
+              <h4>메시지 입력칸에 간단히 내용 적기</h4>
+              <p>예: <code>Claude가 메인 페이지 수정</code> — 나중에 어떤 변경이었는지 알아보기 위한 메모입니다.</p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num fok">✓</div>
+            <div class="flow-body">
+              <h4><strong>✓ 커밋</strong> 버튼 클릭</h4>
+              <p>이 시점의 파일 상태가 기록됩니다. 나중에 뭔가 잘못되면 이 시점으로 되돌릴 수 있습니다.</p>
+            </div>
+          </div>
+        </div>
+        <div class="info-box warn">
+          <span class="info-icon">⚠️</span>
+          <div>커밋을 꼭 해야 하는 건 아닙니다. 하지만 Claude와 함께 큰 변경을 하기 전에 커밋해 두면 <strong>"실수해도 돌아갈 수 있다"</strong>는 안전망이 생깁니다.</div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>✅ 완료 확인</h3>
+        <div class="check-list">
+          <div class="check-item" onclick="toggle(this)">
+            <div class="check-box"></div>
+            <span class="check-item-label">소스 컨트롤 패널을 열어봤다 (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>)</span>
+          </div>
+          <div class="check-item" onclick="toggle(this)">
+            <div class="check-box"></div>
+            <span class="check-item-label">M / U / D 배지가 무슨 뜻인지 이해했다</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goTo(1)">← 이전</button>
+        <span class="step-counter">3 / 3</span>
+        <button class="btn btn-success" onclick="goTo(3)">완료 →</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         DONE
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="3">
+      <div class="done-card">
+        <div class="done-icon">🎉</div>
+        <h2>VS Code 기초 완료!</h2>
+        <p>폴더 열기, 탐색기, 소스 컨트롤까지 익혔습니다.<br/>
+        이제 Claude Code와 함께 편하게 작업할 수 있습니다.</p>
+        <div class="done-actions">
+          <a href="tutorial-vscode.html" class="btn btn-primary">🔌 Claude Code 설치하기</a>
+          <a href="practice.html" class="btn btn-ghost">🚀 실습 예제 도전</a>
+          <a href="index.html" class="btn btn-ghost">← 메인으로</a>
+        </div>
+
+        <div style="margin-top:36px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:left">
+          <p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase">Claude Code와 함께할 때 기억할 것</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <span style="font-size:18px;flex-shrink:0">1️⃣</span>
+              <span style="font-size:14px;color:var(--muted);line-height:1.6">Claude와 작업 시작 전, <strong style="color:var(--text)">항상 폴더를 먼저 열자</strong></span>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <span style="font-size:18px;flex-shrink:0">2️⃣</span>
+              <span style="font-size:14px;color:var(--muted);line-height:1.6">Claude가 뭘 바꿨는지 궁금하면 <strong style="color:var(--text)">소스 컨트롤(🔀)</strong>에서 확인</span>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <span style="font-size:18px;flex-shrink:0">3️⃣</span>
+              <span style="font-size:14px;color:var(--muted);line-height:1.6">큰 작업 전에 <strong style="color:var(--text)">커밋</strong> 해두면 실수해도 돌아갈 수 있다</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const STEPS = [
+    { label: "폴더 열기" },
+    { label: "탐색기" },
+    { label: "소스 컨트롤" },
+  ];
+  const TOTAL = STEPS.length;
+  let current = 0;
+
+  function buildNav() {
+    const nav = document.getElementById('stepNav');
+    nav.innerHTML = STEPS.map((s, i) => `
+      <button class="snav-item${i===0?' active':''}" onclick="goTo(${i})">
+        <span class="snav-dot">${i+1}</span>
+        ${s.label}
+      </button>`).join('');
+  }
+
+  function goTo(idx) {
+    if (idx < 0 || idx > TOTAL) return;
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('visible'));
+    document.querySelectorAll('.snav-item').forEach((b, i) => {
+      b.classList.toggle('active', i === idx);
+      b.classList.toggle('done', i < idx);
+    });
+    const card = document.querySelector(`[data-step="${idx}"]`);
+    if (card) card.classList.add('visible');
+    current = idx;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggle(el) {
+    el.classList.toggle('checked');
+    el.querySelector('.check-box').textContent = el.classList.contains('checked') ? '✓' : '';
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const checks = document.querySelectorAll('.check-item.checked').length;
+    const total  = document.querySelectorAll('.check-item').length;
+    const pct = total ? Math.round(checks / total * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = checks + ' / ' + total;
+  }
+
+  buildNav();
+  goTo(0);
+</script>
+</body>
+</html>

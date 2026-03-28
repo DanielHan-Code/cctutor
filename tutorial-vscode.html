@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code 설치 튜터리얼 — VS Code 익스텐션</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --surface: #18181b;
+      --surface2: #27272a;
+      --border: #3f3f46;
+      --accent: #f97316;
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --yellow: #eab308;
+      --vscode-blue: #007acc;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,13,15,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 17px; color: var(--text); text-decoration: none;
+      margin-right: auto;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    nav { display: flex; gap: 10px; align-items: center; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+    nav a:hover { color: var(--text); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 7px;
+      border: 1px solid var(--border); color: var(--muted) !important;
+      font-size: 13px !important; font-weight: 500 !important;
+      transition: border-color .2s, color .2s !important;
+    }
+    .nav-back:hover { border-color: var(--accent); color: var(--text) !important; }
+    .nav-switch {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 7px;
+      background: rgba(249,115,22,.08); border: 1px solid rgba(249,115,22,.25);
+      color: var(--accent) !important; font-size: 13px !important; font-weight: 500 !important;
+      text-decoration: none; transition: background .2s, border-color .2s;
+    }
+    .nav-switch:hover { background: rgba(249,115,22,.15); border-color: var(--accent); }
+
+    /* LAYOUT */
+    .layout { display:flex; flex:1; max-width:1100px; margin:0 auto; width:100%; padding:40px 24px; gap:40px; align-items:flex-start; }
+
+    /* SIDEBAR */
+    .sidebar { width:240px; flex-shrink:0; position:sticky; top:80px; }
+    .sidebar-title { font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+
+    .total-progress { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:20px; }
+    .total-progress-row { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:10px; }
+    .total-progress-row span:last-child { color:var(--accent); font-weight:600; }
+    .prog-bg { background:var(--surface2); border-radius:99px; height:6px; overflow:hidden; }
+    .prog-fill { height:100%; background:linear-gradient(90deg,var(--accent),#fb923c); border-radius:99px; transition:width .5s ease; width:0%; }
+
+    .step-nav { display:flex; flex-direction:column; gap:3px; }
+    .snav-item {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 10px; border-radius:7px; cursor:pointer;
+      color:var(--muted); font-size:13px; font-weight:500;
+      border:none; background:none; text-align:left; width:100%;
+      transition:background .15s;
+    }
+    .snav-item:hover { background:var(--surface); color:var(--text); }
+    .snav-item.active { background:var(--surface); color:var(--text); }
+    .snav-item.done { color:var(--green); }
+    .snav-dot {
+      width:22px; height:22px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:700; flex-shrink:0;
+      background:var(--surface2); border:1px solid var(--border); color:var(--muted);
+      transition:all .2s;
+    }
+    .snav-item.active .snav-dot { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .snav-item.done  .snav-dot { background:rgba(34,197,94,.15); border-color:var(--green); color:var(--green); }
+    .sidebar-practice {
+      display:flex; align-items:center; gap:10px;
+      margin-top:16px; padding:12px; border-radius:9px;
+      background: rgba(249,115,22,.08); border:1px solid rgba(249,115,22,.25);
+      text-decoration:none; transition: border-color .2s, background .2s;
+    }
+    .sidebar-practice:hover { border-color:var(--accent); background:rgba(249,115,22,.14); }
+    .sidebar-practice-icon { font-size:20px; flex-shrink:0; }
+    .sidebar-practice-title { font-size:13px; font-weight:700; color:var(--text); }
+    .sidebar-practice-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+    .sidebar-practice-arrow { font-size:14px; color:var(--accent); margin-left:auto; flex-shrink:0; }
+
+    /* BRANCH SELECTOR */
+    .branch-selector { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .branch-btn {
+      flex: 1; min-width: 200px;
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface2); border: 2px solid var(--border);
+      border-radius: 12px; padding: 16px 20px;
+      cursor: pointer; text-align: left; transition: all .2s;
+    }
+    .branch-btn:hover { border-color: var(--accent); }
+    .branch-btn.active { border-color: var(--accent); background: rgba(249,115,22,.08); }
+    .branch-icon { font-size: 24px; flex-shrink: 0; }
+    .branch-btn-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .branch-btn-sub { font-size: 12px; color: var(--muted); }
+    .branch-content { animation: fadeIn .25s ease; }
+
+    /* METHOD BADGE */
+    .method-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:11px; font-weight:600; padding:3px 10px; border-radius:99px;
+      margin-bottom:16px;
+    }
+    .method-gui { background:rgba(0,122,204,.12); border:1px solid rgba(0,122,204,.3); color:#60b4e8; }
+    .method-manual { background:rgba(59,130,246,.12); border:1px solid rgba(59,130,246,.3); color:#93c5fd; }
+
+    /* CONTENT */
+    .content { flex:1; min-width:0; }
+    .step-card { display:none; animation:fadeIn .3s ease; }
+    .step-card.visible { display:block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    .step-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+    .step-badge { background:var(--accent); color:#fff; font-size:13px; font-weight:700; padding:4px 12px; border-radius:99px; white-space:nowrap; margin-top:4px; flex-shrink:0; }
+    .step-header-text h2 { font-size:28px; font-weight:700; letter-spacing:-.8px; margin-bottom:8px; }
+    .step-header-text p { font-size:15px; color:var(--muted); line-height:1.7; }
+
+    .sub-section { margin-bottom:28px; }
+    .sub-section h3 { font-size:15px; font-weight:600; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .sub-section > p { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:12px; }
+
+    /* VS CODE UI MOCKUP */
+    .vscode-mock {
+      background: #1e1e1e; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+      margin-bottom: 16px;
+    }
+    .vscode-titlebar {
+      background: #323233; padding: 8px 14px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .vscode-dots { display: flex; gap: 6px; }
+    .vscode-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .vscode-dot.r { background: #ff5f57; }
+    .vscode-dot.y { background: #febc2e; }
+    .vscode-dot.g { background: #28c840; }
+    .vscode-title { flex: 1; text-align: center; font-size: 11px; color: rgba(255,255,255,.35); font-family: 'JetBrains Mono', monospace; }
+    .vscode-body { padding: 16px 20px; font-size: 13px; line-height: 1.8; }
+    .vscode-search {
+      background: #3c3c3c; border: 1px solid #555; border-radius: 4px;
+      padding: 6px 12px; color: #ccc; font-family: 'Inter', sans-serif;
+      font-size: 13px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .vscode-search-icon { color: #888; font-size: 12px; }
+    .vscode-ext-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 8px; border-radius: 4px;
+      border: 1px solid transparent; transition: border-color .15s;
+    }
+    .vscode-ext-item.highlighted { background: #04395e; border-color: #007acc; }
+    .vscode-ext-icon {
+      width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .vscode-ext-name { font-size: 13px; font-weight: 600; color: #ccc; }
+    .vscode-ext-author { font-size: 11px; color: #888; margin-top: 2px; }
+    .vscode-ext-desc { font-size: 11px; color: #999; margin-top: 2px; }
+    .vscode-install-btn {
+      margin-left: auto; background: #0e639c; color: #fff;
+      border: none; border-radius: 3px; padding: 5px 14px;
+      font-size: 12px; font-family: 'Inter', sans-serif; cursor: default;
+      flex-shrink: 0;
+    }
+
+    /* CODE BLOCK (minimal, for command palette) */
+    .kbd-combo {
+      display: inline-flex; align-items: center; gap: 4px; margin: 0 2px;
+    }
+    kbd {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 7px;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    /* INFO BOXES */
+    .info-box { border-radius:8px; padding:12px 16px; font-size:13.5px; line-height:1.65; display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+    .info-box.tip  { background:rgba(34,197,94,.08);  border:1px solid rgba(34,197,94,.22);  color:#86efac; }
+    .info-box.warn { background:rgba(234,179,8,.08);  border:1px solid rgba(234,179,8,.25);  color:#fde68a; }
+    .info-box.info { background:rgba(59,130,246,.08); border:1px solid rgba(59,130,246,.2);  color:#93c5fd; }
+    .info-icon { font-size:15px; flex-shrink:0; margin-top:1px; }
+
+    /* FLOW STEPS */
+    .flow { display:flex; flex-direction:column; gap:0; margin-bottom:20px; }
+    .flow-item { display:flex; gap:14px; position:relative; padding-bottom:16px; }
+    .flow-item:last-child { padding-bottom:0; }
+    .flow-item:not(:last-child)::before { content:''; position:absolute; left:18px; top:38px; bottom:0; width:2px; background:var(--border); }
+    .flow-num {
+      width:38px; height:38px; border-radius:50%; flex-shrink:0; z-index:1;
+      display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;
+    }
+    .flow-num.n  { background:var(--surface2); border:2px solid var(--border); color:var(--muted); }
+    .flow-num.a  { background:rgba(249,115,22,.15); border:2px solid var(--accent); color:var(--accent); }
+    .flow-num.ok { background:rgba(34,197,94,.12); border:2px solid var(--green); color:var(--green); font-size:16px; }
+    .flow-body { background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:12px 16px; flex:1; }
+    .flow-body h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
+    .flow-body.ok h4 { color:var(--green); }
+    .flow-body p { font-size:12px; color:var(--muted); line-height:1.6; }
+
+    /* CHECK LIST */
+    .check-list { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+    .check-item { display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 16px; cursor:pointer; transition:border-color .2s; user-select:none; }
+    .check-item:hover { border-color:var(--accent); }
+    .check-item.checked { border-color:var(--green); background:rgba(34,197,94,.06); }
+    .check-box { width:20px; height:20px; border-radius:5px; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; font-size:12px; }
+    .check-item.checked .check-box { background:var(--green); border-color:var(--green); color:#fff; }
+    .check-item-label { font-size:14px; font-weight:500; }
+    .check-item.checked .check-item-label { color:var(--green); text-decoration:line-through; opacity:.7; }
+
+    /* NAV */
+    .nav-bar { display:flex; align-items:center; justify-content:space-between; margin-top:40px; padding-top:24px; border-top:1px solid var(--border); }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:11px 24px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all .15s; }
+    .btn-ghost  { background:var(--surface2); color:var(--muted); border:1px solid var(--border); }
+    .btn-ghost:hover { color:var(--text); border-color:var(--muted); }
+    .btn-primary { background:var(--accent); color:#fff; }
+    .btn-primary:hover { background:#fb923c; transform:translateY(-1px); }
+    .btn-success { background:var(--green); color:#fff; }
+    .btn-success:hover { background:#16a34a; }
+
+    /* DONE */
+    .done-card { text-align:center; padding:60px 40px; }
+    .done-icon { width:72px; height:72px; background:rgba(34,197,94,.12); border:2px solid var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 24px; }
+    .done-card h2 { font-size:32px; font-weight:700; margin-bottom:12px; letter-spacing:-1px; }
+    .done-card > p  { font-size:15px; color:var(--muted); max-width:480px; margin:0 auto 36px; line-height:1.7; }
+    .done-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    .done-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:36px; text-align:left; }
+    .done-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; }
+    .done-item-icon { font-size:18px; margin-bottom:8px; }
+    .done-item h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
+    .done-item p  { font-size:12px; color:var(--muted); }
+    .next-step-box {
+      background: linear-gradient(135deg, rgba(249,115,22,.1), rgba(249,115,22,.04));
+      border: 1px solid rgba(249,115,22,.35);
+      border-radius: 14px; padding: 32px; margin: 32px 0;
+      text-align: left; display: flex; align-items: center; gap: 28px;
+    }
+    .next-step-icon { font-size: 48px; flex-shrink: 0; }
+    .next-step-body { flex: 1; }
+    .next-step-body h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .next-step-body p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+    .next-step-body ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .next-step-body ul li {
+      font-size: 12px; color: var(--muted);
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 3px 10px; border-radius: 99px;
+    }
+    .btn-practice {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #fff;
+      padding: 12px 24px; border-radius: 9px; font-size: 15px; font-weight: 700;
+      text-decoration: none; transition: background .2s, transform .1s;
+    }
+    .btn-practice:hover { background: #fb923c; transform: translateY(-1px); }
+
+    /* OFFICIAL LINK */
+    .official-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; color: var(--muted);
+      text-decoration: none; border: 1px solid var(--border);
+      background: var(--surface2); padding: 4px 10px;
+      border-radius: 6px; transition: all .15s; margin-bottom: 12px;
+    }
+    .official-link:hover { color: var(--text); border-color: var(--muted); }
+    .official-link .ext { font-size: 10px; opacity: .6; }
+
+    /* ALREADY INSTALLED BANNER */
+    .already-banner {
+      background: rgba(34,197,94,.07); border: 1px solid rgba(34,197,94,.25);
+      border-radius: 10px; padding: 14px 18px; margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .already-banner-icon { font-size: 20px; flex-shrink: 0; }
+    .already-banner-text { font-size: 13px; color: #86efac; line-height: 1.6; }
+
+    @media(max-width:768px){
+      .layout{flex-direction:column; gap:24px;}
+      .sidebar{width:100%; position:static;}
+      .step-nav{flex-direction:row; flex-wrap:wrap;}
+      .done-grid{grid-template-columns:1fr 1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">✦</div>
+      Claude Code 튜터리얼
+    </a>
+    <nav>
+      <a href="index.html" class="nav-back">← 메인페이지</a>
+      <a href="tutorial.html" class="nav-switch">⚡ PowerShell 버전으로</a>
+      <a href="practice.html">실습 예제</a>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">전체 진행률</div>
+    <div class="total-progress">
+      <div class="total-progress-row">
+        <span>완료한 단계</span>
+        <span id="progressLabel">0 / 4</span>
+      </div>
+      <div class="prog-bg"><div class="prog-fill" id="progressBar"></div></div>
+    </div>
+    <div class="sidebar-title">단계 목록</div>
+    <div class="step-nav" id="stepNav"></div>
+
+    <a href="practice.html" class="sidebar-practice">
+      <div class="sidebar-practice-icon">🚀</div>
+      <div>
+        <div class="sidebar-practice-title">실습 예제</div>
+        <div class="sidebar-practice-sub">설치 완료 후 바로 도전</div>
+      </div>
+      <span class="sidebar-practice-arrow">→</span>
+    </a>
+  </aside>
+
+  <main class="content" id="mainContent">
+
+    <!-- ══════════════════════════════════════
+         STEP 0  VS Code 설치
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="0">
+      <div class="step-header">
+        <span class="step-badge">Step 1</span>
+        <div class="step-header-text">
+          <h2>VS Code 설치</h2>
+          <p>VS Code는 Microsoft가 만든 무료 코드 편집기입니다.<br/>
+          메모장보다 훨씬 강력하고, 전 세계 개발자들이 가장 많이 쓰는 도구예요.</p>
+        </div>
+      </div>
+      <span class="method-badge method-gui">🖱️ GUI — 클릭만으로 설치</span>
+
+      <div class="sub-section">
+        <h3>VS Code가 뭔가요?</h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center">
+            <div style="font-size:28px;margin-bottom:8px">✏️</div>
+            <div style="font-weight:600;font-size:13px;margin-bottom:4px">코드 편집기</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5">메모장처럼 글자를 쓰고 수정할 수 있는데, 코드를 위해 특별히 만들어진 프로그램입니다</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center">
+            <div style="font-size:28px;margin-bottom:8px">🆓</div>
+            <div style="font-weight:600;font-size:13px;margin-bottom:4px">완전 무료</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5">Microsoft가 만들었지만 누구나 무료로 사용할 수 있습니다. 설치도 간단합니다</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center">
+            <div style="font-size:28px;margin-bottom:8px">🔌</div>
+            <div style="font-weight:600;font-size:13px;margin-bottom:4px">익스텐션 지원</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5">플러그인처럼 기능을 추가할 수 있어요. Claude Code도 이 방식으로 설치합니다</div>
+          </div>
+        </div>
+        <div class="info-box info">
+          <span class="info-icon">ℹ️</span>
+          <span>이미 VS Code가 설치되어 있다면 이 단계를 건너뛰고 바로 <strong>다음 →</strong> 버튼을 눌러도 됩니다.</span>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>① VS Code 다운로드</h3>
+        <a href="https://code.visualstudio.com/download" target="_blank" class="official-link">⬇️ code.visualstudio.com/download <span class="ext">공식 다운로드 페이지 ↗</span></a>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num n">1</div>
+            <div class="flow-body">
+              <h4>위 링크를 클릭해 다운로드 페이지로 이동</h4>
+              <p>파란색 <strong>Windows</strong> 버튼을 클릭하면 설치 파일(.exe)이 다운로드됩니다.</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num a">2</div>
+            <div class="flow-body">
+              <h4>다운로드된 파일 실행</h4>
+              <p>브라우저 하단 또는 다운로드 폴더에서 <strong>VSCodeSetup-x64-…exe</strong> 파일을 더블클릭합니다.</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n">3</div>
+            <div class="flow-body">
+              <h4>설치 마법사 진행</h4>
+              <p>약관 동의 → <strong>다음</strong> 계속 클릭 → <strong>설치</strong> 클릭. 특별히 바꿀 옵션 없이 기본값으로 진행해도 됩니다.</p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num ok">✓</div>
+            <div class="flow-body ok">
+              <h4>설치 완료 → VS Code 실행</h4>
+              <p>설치 마지막 화면에서 <strong>"Visual Studio Code 시작"</strong> 체크박스가 선택된 채로 <strong>마침</strong>을 클릭하면 바로 실행됩니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>② VS Code 화면 구성 한눈에 보기</h3>
+
+        <!-- VS Code 기본 화면 목업 -->
+        <div style="border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:12px">
+
+          <!-- 타이틀바 -->
+          <div style="background:#3c3c3c;padding:7px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #252526">
+            <div style="display:flex;gap:6px">
+              <div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div>
+              <div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div>
+              <div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div>
+            </div>
+            <div style="flex:1;text-align:center;font-size:11px;color:rgba(255,255,255,.4);font-family:'Inter',sans-serif">
+              index.html — my-project — Visual Studio Code
+            </div>
+          </div>
+
+          <!-- 메인 레이아웃 -->
+          <div style="display:flex;height:320px">
+
+            <!-- Activity Bar -->
+            <div style="width:44px;background:#333333;border-right:1px solid #252526;display:flex;flex-direction:column;align-items:center;padding-top:8px;gap:4px;flex-shrink:0;position:relative">
+              <!-- 활성 아이콘 (파일 탐색기) -->
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-left:2px solid #f97316;color:#ccc;font-size:18px">📁</div>
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px">🔍</div>
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px">🔀</div>
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px">🐛</div>
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px">⬛</div>
+              <div style="margin-top:auto;margin-bottom:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px">⚙️</div>
+              <!-- 라벨 -->
+              <div style="position:absolute;left:48px;top:10px;background:#f97316;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;font-family:'Inter',sans-serif">① Activity Bar</div>
+            </div>
+
+            <!-- Side Bar (파일 탐색기) -->
+            <div style="width:160px;background:#252526;border-right:1px solid #1e1e1e;flex-shrink:0;overflow:hidden;position:relative">
+              <div style="padding:8px 12px;font-size:10px;font-weight:700;color:#bbb;letter-spacing:1px;font-family:'Inter',sans-serif;border-bottom:1px solid #1e1e1e">탐색기</div>
+              <div style="padding:6px 0">
+                <div style="padding:3px 12px;color:#ccc;font-size:11px;font-family:'Inter',sans-serif">📂 MY-PROJECT</div>
+                <div style="padding:3px 20px;color:#9cdcfe;font-size:11px;font-family:'Inter',sans-serif">📄 index.html</div>
+                <div style="padding:3px 20px;color:#aaa;font-size:11px;font-family:'Inter',sans-serif">📄 style.css</div>
+                <div style="padding:3px 20px;color:#aaa;font-size:11px;font-family:'Inter',sans-serif">📄 app.js</div>
+                <div style="padding:3px 20px;color:#aaa;font-size:11px;font-family:'Inter',sans-serif">📄 README.md</div>
+              </div>
+              <!-- 라벨 -->
+              <div style="position:absolute;bottom:8px;left:4px;right:4px;background:#007acc;color:#fff;font-size:10px;font-weight:700;padding:3px 6px;border-radius:4px;text-align:center;font-family:'Inter',sans-serif">② Side Bar</div>
+            </div>
+
+            <!-- 오른쪽 (에디터 + 터미널) -->
+            <div style="flex:1;display:flex;flex-direction:column;background:#1e1e1e;overflow:hidden">
+
+              <!-- 탭 바 -->
+              <div style="background:#2d2d2d;border-bottom:1px solid #252526;display:flex;align-items:center">
+                <div style="padding:6px 16px;background:#1e1e1e;color:#ccc;font-size:11px;font-family:'Inter',sans-serif;border-right:1px solid #252526;border-top:1px solid #f97316">index.html ×</div>
+                <div style="padding:6px 16px;color:#777;font-size:11px;font-family:'Inter',sans-serif">style.css ×</div>
+              </div>
+
+              <!-- 에디터 영역 -->
+              <div style="flex:1;padding:12px 16px;overflow:hidden;position:relative">
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:16px;user-select:none">1</span><span style="color:#f8f8f2">&lt;!</span><span style="color:#ff79c6">DOCTYPE</span><span style="color:#f8f8f2"> html&gt;</span></div>
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:16px;user-select:none">2</span><span style="color:#f8f8f2">&lt;</span><span style="color:#ff79c6">html</span><span style="color:#50fa7b"> lang</span><span style="color:#f8f8f2">=</span><span style="color:#f1fa8c">"ko"</span><span style="color:#f8f8f2">&gt;</span></div>
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:16px;user-select:none">3</span><span style="color:#f8f8f2">&lt;</span><span style="color:#ff79c6">head</span><span style="color:#f8f8f2">&gt;</span></div>
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:8px;user-select:none">4</span><span style="margin-left:16px;color:#f8f8f2">&lt;</span><span style="color:#ff79c6">title</span><span style="color:#f8f8f2">&gt;</span><span style="color:#f8f8f2">내 첫 번째 페이지</span><span style="color:#f8f8f2">&lt;/</span><span style="color:#ff79c6">title</span><span style="color:#f8f8f2">&gt;</span></div>
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:16px;user-select:none">5</span><span style="color:#f8f8f2">&lt;/</span><span style="color:#ff79c6">head</span><span style="color:#f8f8f2">&gt;</span></div>
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:16px;user-select:none">6</span><span style="color:#f8f8f2">&lt;</span><span style="color:#ff79c6">body</span><span style="color:#f8f8f2">&gt;</span></div>
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:8px;user-select:none">7</span><span style="margin-left:16px;color:#f8f8f2">&lt;</span><span style="color:#ff79c6">h1</span><span style="color:#f8f8f2">&gt;</span><span style="color:#f8f8f2">안녕하세요!</span><span style="color:#f8f8f2">&lt;/</span><span style="color:#ff79c6">h1</span><span style="color:#f8f8f2">&gt;</span></div>
+                <div style="color:#6272a4;margin-bottom:2px"><span style="color:#888;margin-right:16px;user-select:none">8</span><span style="color:#f8f8f2">&lt;/</span><span style="color:#ff79c6">body</span><span style="color:#f8f8f2">&gt;</span></div>
+                <div style="color:#6272a4"><span style="color:#888;margin-right:16px;user-select:none">9</span><span style="color:#f8f8f2">&lt;/</span><span style="color:#ff79c6">html</span><span style="color:#f8f8f2">&gt;</span></div>
+                <!-- 라벨 -->
+                <div style="position:absolute;top:8px;right:8px;background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:'Inter',sans-serif">③ Editor</div>
+              </div>
+
+              <!-- 터미널 패널 -->
+              <div style="height:80px;background:#1e1e1e;border-top:1px solid #3a3a3a;position:relative">
+                <div style="background:#252526;padding:4px 12px;display:flex;gap:12px;border-bottom:1px solid #1e1e1e">
+                  <span style="font-size:11px;color:#ccc;font-family:'Inter',sans-serif;border-bottom:1px solid #f97316;padding-bottom:2px">터미널</span>
+                  <span style="font-size:11px;color:#666;font-family:'Inter',sans-serif">출력</span>
+                  <span style="font-size:11px;color:#666;font-family:'Inter',sans-serif">문제</span>
+                </div>
+                <div style="padding:6px 14px;color:#9cdcfe;font-size:11px">
+                  <span style="color:#b57aff">PS</span><span style="color:#f8f8f2"> C:\Users\neurophet\my-project&gt; </span><span style="color:#8be9fd">claude</span>
+                </div>
+                <!-- 라벨 -->
+                <div style="position:absolute;bottom:6px;right:8px;background:#3b82f6;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:'Inter',sans-serif">④ Terminal</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 상태바 -->
+          <div style="background:#007acc;padding:3px 12px;display:flex;align-items:center;gap:16px">
+            <span style="font-size:10px;color:#fff;font-family:'Inter',sans-serif">🔀 main</span>
+            <span style="font-size:10px;color:#fff;font-family:'Inter',sans-serif">⚠ 0 &nbsp;⊘ 0</span>
+            <span style="margin-left:auto;font-size:10px;color:#fff;font-family:'Inter',sans-serif">HTML &nbsp; UTF-8 &nbsp; Ln 7, Col 1</span>
+          </div>
+
+        </div>
+
+        <!-- 구성 설명 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+            <span style="background:#f97316;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:1px">①</span>
+            <div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Activity Bar</div><div style="font-size:12px;color:var(--muted)">왼쪽 아이콘 바. 파일 탐색기·검색·익스텐션 등을 전환합니다</div></div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+            <span style="background:#007acc;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:1px">②</span>
+            <div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Side Bar</div><div style="font-size:12px;color:var(--muted)">Activity Bar에서 선택한 패널이 표시됩니다. 파일 목록·익스텐션 목록 등</div></div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+            <span style="background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:1px">③</span>
+            <div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Editor</div><div style="font-size:12px;color:var(--muted)">파일을 열면 여기서 내용을 보고 수정합니다. 가장 넓은 가운데 영역</div></div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+            <span style="background:#3b82f6;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:1px">④</span>
+            <div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Terminal</div><div style="font-size:12px;color:var(--muted)">하단 터미널 창. 명령어를 입력하고 Claude Code를 실행합니다</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>✅ 완료 확인</h3>
+        <div class="check-list">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">VS Code 설치 완료 및 실행됨</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">VS Code 화면이 정상적으로 보인다</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 1  익스텐션 설치
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="1">
+      <div class="step-header">
+        <span class="step-badge">Step 2</span>
+        <div class="step-header-text">
+          <h2>VS Code 익스텐션 설치</h2>
+          <p>VS Code 마켓플레이스에서 Claude Code 익스텐션을 설치합니다.<br/>
+          별도의 Node.js 설치나 터미널 작업 없이 클릭 몇 번으로 완료됩니다.</p>
+        </div>
+      </div>
+      <span class="method-badge method-gui">🖱️ GUI — 클릭만으로 설치</span>
+
+      <div class="already-banner">
+        <div class="already-banner-icon">💡</div>
+        <div class="already-banner-text">
+          PowerShell로 Claude Code CLI를 이미 설치한 분이라면 익스텐션을 추가해도 충돌 없이 함께 사용할 수 있습니다.
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>① Extensions 패널 열기</h3>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num n">1</div>
+            <div class="flow-body">
+              <h4>단축키로 열기</h4>
+              <p>
+                <span class="kbd-combo"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd></span>
+                — 또는 왼쪽 사이드바의 블록 아이콘(⬛) 클릭
+              </p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num a">2</div>
+            <div class="flow-body">
+              <h4>검색창에 <code>Claude Code</code> 입력</h4>
+              <p>아래와 같이 Anthropic의 Claude Code 익스텐션이 목록에 나타납니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VS Code UI 목업 -->
+        <div class="vscode-mock">
+          <div class="vscode-titlebar">
+            <div class="vscode-dots">
+              <div class="vscode-dot r"></div><div class="vscode-dot y"></div><div class="vscode-dot g"></div>
+            </div>
+            <div class="vscode-title">Extensions — Visual Studio Code</div>
+            <div style="width:60px"></div>
+          </div>
+          <div class="vscode-body">
+            <div class="vscode-search">
+              <span class="vscode-search-icon">🔍</span>
+              <span style="color:#ccc">Claude Code</span>
+            </div>
+            <div class="vscode-ext-item highlighted">
+              <div class="vscode-ext-icon">✦</div>
+              <div style="flex:1;min-width:0">
+                <div class="vscode-ext-name">Claude Code</div>
+                <div class="vscode-ext-author">Anthropic</div>
+                <div class="vscode-ext-desc">AI-powered coding assistant by Anthropic</div>
+              </div>
+              <div class="vscode-install-btn">Install</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box info">
+          <span class="info-icon">ℹ️</span>
+          <span>발행자(publisher)가 반드시 <strong>Anthropic</strong>인지 확인하세요. 유사한 이름의 비공식 익스텐션을 설치하지 않도록 주의하세요.</span>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>② Install 버튼 클릭</h3>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num n">1</div>
+            <div class="flow-body">
+              <h4>목록에서 <strong>Claude Code (Anthropic)</strong> 클릭</h4>
+              <p>익스텐션 상세 페이지가 열립니다.</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num a">2</div>
+            <div class="flow-body">
+              <h4>파란색 <strong>Install</strong> 버튼 클릭</h4>
+              <p>자동으로 다운로드 및 설치가 진행됩니다. 수십 초 내로 완료됩니다.</p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num ok">✓</div>
+            <div class="flow-body ok">
+              <h4>설치 완료 — 왼쪽 사이드바에 Claude 아이콘 생김</h4>
+              <p>Activity Bar(왼쪽 아이콘 바)에 Claude Code 아이콘이 추가됩니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box tip">
+          <span class="info-icon">✅</span>
+          <span>마켓플레이스 웹사이트에서 직접 설치할 수도 있습니다.</span>
+        </div>
+        <a href="https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code" target="_blank" class="official-link">
+          🛒 marketplace.visualstudio.com — Claude Code <span class="ext">마켓플레이스 ↗</span>
+        </a>
+      </div>
+
+      <div class="sub-section">
+        <h3>✅ 완료 확인</h3>
+        <div class="check-list">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">Extensions 패널에서 Claude Code (Anthropic) 설치 완료</span></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">왼쪽 사이드바(Activity Bar)에 Claude 아이콘이 생겼다</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 2  계정 연동
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="2">
+      <div class="step-header">
+        <span class="step-badge">Step 3</span>
+        <div class="step-header-text">
+          <h2>Claude 계정 연동</h2>
+          <p>사이드바의 Claude 아이콘을 클릭해 로그인합니다.<br/>
+          사용 중인 요금제에 따라 방식을 선택하세요.</p>
+        </div>
+      </div>
+      <span class="method-badge method-gui">🖱️ GUI — 클릭만으로 설치</span>
+
+      <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.35);border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start">
+        <span style="font-size:20px;line-height:1.4">✅</span>
+        <div>
+          <p style="margin:0 0 4px;font-weight:600;color:#4ade80;font-size:14px">이미 로그인된 상태라면 이 단계를 건너뛰세요</p>
+          <p style="margin:0;color:var(--muted);font-size:13px">왼쪽 사이드바에 <strong style="color:var(--text)">이전 대화기록</strong>이 보인다면 이미 인증이 완료된 것입니다. 바로 <strong style="color:var(--text)">Step 4 기본 사용법</strong>으로 넘어가세요.</p>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>① Claude Code 패널 열기</h3>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num n">1</div>
+            <div class="flow-body">
+              <h4>왼쪽 Activity Bar에서 Claude 아이콘 클릭</h4>
+              <p>Claude Code 사이드 패널이 열리고 로그인 화면이 나타납니다.</p>
+            </div>
+          </div>
+          <div class="flow-item" style="padding-bottom:0">
+            <div class="flow-num a">2</div>
+            <div class="flow-body">
+              <h4>또는 명령 팔레트에서 실행</h4>
+              <p>
+                <span class="kbd-combo"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></span>
+                → <code>Claude: Sign In</code> 입력 후 <kbd>Enter</kbd>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px">② 연결 방식 선택</h3>
+
+      <div class="branch-selector">
+        <button class="branch-btn active" onclick="switchBranch('pro', this)">
+          <span class="branch-icon">💎</span>
+          <div>
+            <div class="branch-btn-title">Pro / Max 구독 중</div>
+            <div class="branch-btn-sub">claude.ai 계정으로 바로 연동</div>
+          </div>
+        </button>
+        <button class="branch-btn" onclick="switchBranch('api', this)">
+          <span class="branch-icon">🔑</span>
+          <div>
+            <div class="branch-btn-title">API 키 사용</div>
+            <div class="branch-btn-sub">console.anthropic.com에서 발급</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- PRO/MAX 분기 -->
+      <div id="branch-pro" class="branch-content">
+        <div class="sub-section">
+          <h3>③ 로그인 진행</h3>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="flow-num n">1</div>
+              <div class="flow-body">
+                <h4><strong>Sign in with Claude.ai</strong> 버튼 클릭</h4>
+                <p>브라우저가 자동으로 열리며 claude.ai 로그인 페이지로 이동합니다.</p>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-num a">2</div>
+              <div class="flow-body">
+                <h4>Pro / Max 구독 계정으로 로그인</h4>
+                <p>이메일·비밀번호 또는 소셜 로그인으로 인증합니다.</p>
+              </div>
+            </div>
+            <div class="flow-item" style="padding-bottom:0">
+              <div class="flow-num ok">✓</div>
+              <div class="flow-body ok">
+                <h4>VS Code로 돌아오면 자동 연동 완료</h4>
+                <p>Claude Code 패널에 채팅창이 열립니다. 바로 사용 가능합니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-section">
+          <h3>✅ 완료 확인</h3>
+          <div class="check-list">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">브라우저에서 claude.ai 로그인 완료</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">VS Code Claude 패널에 채팅창이 나타났다</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API KEY 분기 -->
+      <div id="branch-api" class="branch-content" style="display:none">
+        <div class="sub-section">
+          <h3>③ API 키 입력</h3>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="flow-num n">1</div>
+              <div class="flow-body">
+                <h4><strong>Use API Key</strong> 선택</h4>
+                <p>VS Code 상단에 API 키 입력 창이 나타납니다.</p>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-num a">2</div>
+              <div class="flow-body">
+                <h4>API 키가 없다면 먼저 발급</h4>
+                <a href="https://console.anthropic.com" target="_blank" class="official-link" style="display:inline-flex;margin-top:6px">🌐 console.anthropic.com <span class="ext">API 콘솔 ↗</span></a>
+                <p>로그인 → API Keys → Create Key로 발급 후 복사해 오세요.</p>
+              </div>
+            </div>
+            <div class="flow-item" style="padding-bottom:0">
+              <div class="flow-num ok">✓</div>
+              <div class="flow-body ok">
+                <h4>키 입력 후 Enter → 연동 완료</h4>
+                <p>Claude Code 패널에 채팅창이 열립니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-section">
+          <h3>✅ 완료 확인</h3>
+          <div class="check-list">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">API 키 발급 완료</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-item-label">VS Code Claude 패널에 채팅창이 나타났다</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 3  기본 사용법
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="3">
+      <div class="step-header">
+        <span class="step-badge">Step 4</span>
+        <div class="step-header-text">
+          <h2>기본 사용법</h2>
+          <p>익스텐션 설치 완료! 자주 쓰는 기능과 시작 방법을 안내합니다.</p>
+        </div>
+      </div>
+      <span class="method-badge method-gui">🖱️ GUI — 클릭만으로 설치</span>
+
+      <div class="sub-section">
+        <h3>① Claude 채팅 패널</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-weight:600;font-size:13px;margin-bottom:8px">열기</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7">
+              왼쪽 Activity Bar의 <strong>Claude 아이콘</strong> 클릭<br/>
+              또는 <span class="kbd-combo"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></span> → <code>Claude: Open Chat</code>
+            </div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-weight:600;font-size:13px;margin-bottom:8px">인라인 채팅</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7">
+              에디터에서 코드 선택 후<br/>
+              <span class="kbd-combo"><kbd>Ctrl</kbd>+<kbd>I</kbd></span> → 선택 범위에 대해 바로 질문
+            </div>
+          </div>
+        </div>
+        <div class="info-box info">
+          <span class="info-icon">💡</span>
+          <span>채팅창에 <strong>"@workspace"</strong>를 입력하면 열린 프로젝트 전체 컨텍스트를 Claude에게 전달할 수 있습니다.</span>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>② 시작해볼 수 있는 프롬프트 예시</h3>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--muted)">
+            💬 <span style="color:var(--text)">"현재 열린 파일을 분석하고 개선할 점을 알려줘"</span>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--muted)">
+            💬 <span style="color:var(--text)">"이 함수에 TypeScript 타입을 추가해줘"</span>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--muted)">
+            💬 <span style="color:var(--text)">"선택한 코드에 주석을 달아줘"</span>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--muted)">
+            💬 <span style="color:var(--text)">"로그인 폼 컴포넌트를 새로 만들어줘"</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>③ PowerShell 버전과 차이점</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:var(--accent)">VS Code 익스텐션 (지금)</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)">
+              <li>✅ GUI 기반, 클릭으로 조작</li>
+              <li>✅ 에디터 내 인라인 AI 지원</li>
+              <li>✅ 별도 터미널 불필요</li>
+              <li>⚠️ MCP 서버 연동 제한적</li>
+            </ul>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:var(--muted)">PowerShell CLI 버전</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)">
+              <li>✅ MCP 서버 완전 지원</li>
+              <li>✅ 터미널 기반 자동화</li>
+              <li>✅ 파일 시스템 직접 접근</li>
+              <li>⚠️ 초기 설정 단계 더 많음</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="next-step-box">
+        <div class="next-step-icon">🚀</div>
+        <div class="next-step-body">
+          <h3>이제 직접 만들어볼 시간입니다</h3>
+          <p>실습 예제를 통해 Claude Code를 활용한 실전 프로젝트를 경험해보세요.</p>
+          <ul>
+            <li>📊 영업 실적 대시보드</li>
+            <li>⏱ 업무 타임 트래커</li>
+            <li>🔬 CSV 데이터 분석 도구</li>
+            <li>🧾 팀 경비 정산 계산기</li>
+          </ul>
+          <a href="practice.html" class="btn-practice">실습 예제 시작하기 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         DONE
+    ══════════════════════════════════════ -->
+    <div class="step-card" data-step="4">
+      <div class="done-card">
+        <div class="done-icon">🎉</div>
+        <h2>설치 완료!</h2>
+        <p>Claude Code 익스텐션이<br/>VS Code에 완벽하게 준비됐습니다.</p>
+
+        <div class="next-step-box">
+          <div class="next-step-icon">🚀</div>
+          <div class="next-step-body">
+            <h3>이제 직접 만들어볼 시간입니다</h3>
+            <p>프롬프트 한 번으로 실제 업무에 쓸 수 있는 도구를 Claude가 만들어줍니다.</p>
+            <ul>
+              <li>📊 영업 실적 대시보드</li>
+              <li>⏱ 업무 타임 트래커</li>
+              <li>🔬 CSV 데이터 분석 도구</li>
+              <li>🧾 팀 경비 정산 계산기</li>
+            </ul>
+            <a href="practice.html" class="btn-practice">실습 예제 시작하기 →</a>
+          </div>
+        </div>
+
+        <div class="done-actions">
+          <a href="index.html" class="btn btn-ghost">← 전체 가이드</a>
+          <a href="https://docs.anthropic.com/ko/docs/claude-code" target="_blank" class="btn btn-success">공식 문서 →</a>
+        </div>
+        <div class="done-grid">
+          <div class="done-item">
+            <div class="done-item-icon">💬</div>
+            <h4>채팅 패널</h4>
+            <p>사이드바에서 Claude와 대화</p>
+          </div>
+          <div class="done-item">
+            <div class="done-item-icon">✏️</div>
+            <h4>인라인 편집</h4>
+            <p>Ctrl+I로 선택 코드 바로 수정</p>
+          </div>
+          <div class="done-item">
+            <div class="done-item-icon">🗂️</div>
+            <h4>@workspace</h4>
+            <p>프로젝트 전체 컨텍스트 활용</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAV BAR -->
+    <div class="nav-bar" id="navBar">
+      <button class="btn btn-ghost" id="btnBack" onclick="goStep(-1)">← 이전</button>
+      <div style="font-size:13px;color:var(--muted)" id="stepCounter"></div>
+      <button class="btn btn-primary" id="btnNext" onclick="goStep(1)">다음 →</button>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const STEPS = [
+    { label: "VS Code 설치" },
+    { label: "익스텐션 설치" },
+    { label: "계정 연동" },
+    { label: "기본 사용법" },
+  ];
+  const TOTAL = STEPS.length;
+
+  let currentStep = 0;
+  let doneSteps = new Set();
+
+  const nav = document.getElementById('stepNav');
+  STEPS.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'snav-item';
+    btn.dataset.index = i;
+    btn.innerHTML = `<span class="snav-dot" id="dot-${i}">${i+1}</span>${s.label}`;
+    btn.onclick = () => jumpTo(i);
+    nav.appendChild(btn);
+  });
+
+  function render() {
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('visible'));
+    const card = document.querySelector(`.step-card[data-step="${currentStep}"]`);
+    if (card) card.classList.add('visible');
+
+    document.querySelectorAll('.snav-item').forEach((item, i) => {
+      item.classList.remove('active','done');
+      const dot = document.getElementById(`dot-${i}`);
+      if (!dot) return;
+      if (doneSteps.has(i)) { item.classList.add('done'); dot.textContent = '✓'; }
+      else { dot.textContent = i+1; }
+      if (i === currentStep) item.classList.add('active');
+    });
+
+    const pct = Math.round((doneSteps.size / TOTAL) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = `${doneSteps.size} / ${TOTAL}`;
+
+    const isDone = currentStep === TOTAL;
+    document.getElementById('navBar').style.display = isDone ? 'none' : 'flex';
+    document.getElementById('btnBack').style.display = currentStep === 0 ? 'none' : '';
+
+    const btnNext = document.getElementById('btnNext');
+    if (currentStep === TOTAL - 1) { btnNext.textContent = '완료 🎉'; btnNext.className = 'btn btn-success'; }
+    else { btnNext.textContent = '다음 →'; btnNext.className = 'btn btn-primary'; }
+
+    document.getElementById('stepCounter').textContent = isDone ? '' : `${currentStep+1} / ${TOTAL}`;
+    if (isDone) doneSteps.add(TOTAL - 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goStep(dir) {
+    if (dir === 1 && currentStep < TOTAL) { doneSteps.add(currentStep); currentStep++; }
+    else if (dir === -1 && currentStep > 0) { currentStep--; }
+    render();
+  }
+  function jumpTo(i) { currentStep = i; render(); }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    el.querySelector('.check-box').textContent = el.classList.contains('checked') ? '✓' : '';
+  }
+
+  function switchBranch(type, btn) {
+    document.querySelectorAll('.branch-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.branch-content').forEach(c => c.style.display = 'none');
+    document.getElementById('branch-' + type).style.display = 'block';
+  }
+
+  render();
+</script>
+</body>
+</html>
